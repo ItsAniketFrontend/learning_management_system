@@ -19,6 +19,7 @@
     --warn: #A86A0F; --warn-tint: #FAF0D9;
     --bad: #B83A34; --bad-tint: #FAE5E3;
     --notify: #12735A; --notify-tint: #DCF2EA;
+    --silver: #79848C; --gold: #A8780A; --diamond: #2482A8; --platinum: #66607F;
     --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
     --font-body: "Figtree", "Segoe UI", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
@@ -33,6 +34,7 @@
       --warn: #E2B157; --warn-tint: #31270F;
       --bad: #EE7B74; --bad-tint: #381917;
       --notify: #52CBA0; --notify-tint: #102E27;
+      --silver: #B5BFC6; --gold: #E2B94E; --diamond: #7CCDEA; --platinum: #B7B1D3;
       color-scheme: dark;
     }
   }
@@ -45,6 +47,7 @@
     --warn: #E2B157; --warn-tint: #31270F;
     --bad: #EE7B74; --bad-tint: #381917;
     --notify: #52CBA0; --notify-tint: #102E27;
+    --silver: #B5BFC6; --gold: #E2B94E; --diamond: #7CCDEA; --platinum: #B7B1D3;
     color-scheme: dark;
   }
 
@@ -178,6 +181,30 @@
   th { font: 600 12px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
   tr:last-child td { border-bottom: 0; }
 
+  /* Tutor plans */
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .plan { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; display: grid; gap: 12px; align-content: start; }
+  .plan-head { display: grid; gap: 4px; }
+  .plan-name { margin: 0; font: 700 1.3rem/1.2 var(--font-display); display: flex; align-items: center; gap: 10px; }
+  .gem { width: 14px; height: 14px; transform: rotate(45deg); border-radius: 3px; flex: none; }
+  .silver .gem { background: var(--silver); } .gold .gem { background: var(--gold); }
+  .diamond .gem { background: var(--diamond); } .platinum .gem { background: var(--platinum); }
+  .plan-model { font: 600 11px/1.4 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .plan-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; font-variant-numeric: tabular-nums; }
+  .plan-price b { font: 700 1.9rem/1 var(--font-display); }
+  .plan-price span { color: var(--muted); font-size: .92rem; }
+  .plan-price .tbc { font: 600 .8rem/1 var(--font-body); color: var(--warn); background: var(--warn-tint); border: 1px solid var(--warn); border-radius: 999px; padding: 5px 10px; }
+  .plan p { margin: 0; color: var(--muted); font-size: .94rem; }
+  .plan dl { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+  .plan dl div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: .9rem; }
+  .plan dt { color: var(--muted); }
+  .plan dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+  .charging { margin: 0; padding: 0; list-style: none; counter-reset: c; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .charging li { counter-increment: c; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; align-items: start; font-size: .94rem; color: var(--muted); }
+  .charging li::before { content: counter(c); width: 26px; height: 26px; border-radius: 50%; background: var(--tutor); color: var(--surface); font: 700 12px/26px var(--font-body); text-align: center; }
+  .charging strong { color: var(--fg); }
+  .sub-h { margin: 6px 0 0; font: 700 1.05rem/1.3 var(--font-body); }
+
   .decisions { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
   .decisions li { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
   .decisions strong { font-size: 1rem; }
@@ -236,6 +263,73 @@
       <svg id="tutor-flow" viewBox="0 0 1120 280" role="img" aria-label="Flowchart of tutor sign-up, profile, KYC upload and admin approval"></svg>
     </div>
     <ol class="mflow" id="tutor-mobile" aria-label="Tutor onboarding steps"></ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Tutor plans</h2>
+      <p>Tutors pay to receive leads. They can pay per lead or buy a pack of leads at a lower cost per lead. Prices marked “to be confirmed” will be filled in once finalised.</p>
+    </div>
+    <div class="plans">
+      <article class="plan silver">
+        <div class="plan-head">
+          <h3 class="plan-name"><i class="gem"></i>Silver</h3>
+          <span class="plan-model">Pay per lead</span>
+        </div>
+        <div class="plan-price"><span class="tbc">Price per lead to be confirmed</span></div>
+        <p>No upfront cost. The tutor pays only for a lead they accept, at the moment they accept it.</p>
+        <dl>
+          <div><dt>Leads</dt><dd>One at a time</dd></div>
+          <div><dt>Payment</dt><dd>On each accepted lead</dd></div>
+          <div><dt>Best for</dt><dd>New or part-time tutors</dd></div>
+        </dl>
+      </article>
+      <article class="plan gold">
+        <div class="plan-head">
+          <h3 class="plan-name"><i class="gem"></i>Gold</h3>
+          <span class="plan-model">Lead pack</span>
+        </div>
+        <div class="plan-price"><b>₹499</b><span>for 10 leads</span></div>
+        <p>The tutor buys 10 leads upfront. One lead is used each time they accept a request.</p>
+        <dl>
+          <div><dt>Leads</dt><dd>10</dd></div>
+          <div><dt>Cost per lead</dt><dd>₹49.90</dd></div>
+          <div><dt>Validity</dt><dd>To be confirmed</dd></div>
+        </dl>
+      </article>
+      <article class="plan diamond">
+        <div class="plan-head">
+          <h3 class="plan-name"><i class="gem"></i>Diamond</h3>
+          <span class="plan-model">Lead pack</span>
+        </div>
+        <div class="plan-price"><span class="tbc">Price and leads to be confirmed</span></div>
+        <p>Same pack model as Gold. The tutor buys a set number of leads upfront and uses one per accepted request.</p>
+        <dl>
+          <div><dt>Leads</dt><dd>To be confirmed</dd></div>
+          <div><dt>Cost per lead</dt><dd>To be confirmed</dd></div>
+          <div><dt>Validity</dt><dd>To be confirmed</dd></div>
+        </dl>
+      </article>
+      <article class="plan platinum">
+        <div class="plan-head">
+          <h3 class="plan-name"><i class="gem"></i>Platinum</h3>
+          <span class="plan-model">Lead pack</span>
+        </div>
+        <div class="plan-price"><span class="tbc">Price and leads to be confirmed</span></div>
+        <p>Same pack model as Gold. The tutor buys a set number of leads upfront and uses one per accepted request.</p>
+        <dl>
+          <div><dt>Leads</dt><dd>To be confirmed</dd></div>
+          <div><dt>Cost per lead</dt><dd>To be confirmed</dd></div>
+          <div><dt>Validity</dt><dd>To be confirmed</dd></div>
+        </dl>
+      </article>
+    </div>
+    <h3 class="sub-h">How a lead is charged</h3>
+    <ol class="charging">
+      <li><span><strong>Tutor accepts a lead</strong> at step 9 of the lead journey.</span></li>
+      <li><span><strong>Silver</strong> tutors pay for that lead online by UPI or card. <strong>Gold, Diamond and Platinum</strong> tutors have one lead taken from their pack.</span></li>
+      <li><span><strong>Parent's contact unlocks</strong> (step 10). If a pack is empty, the tutor is asked to buy a new pack or pay for this one lead.</span></li>
+    </ol>
   </section>
 
   <section>
@@ -402,7 +496,7 @@
     { x: 870, y: 650, w: 210, h: 64, role: "tutor", title: "Reviews the lead", sub: "parent's number still hidden", n: 8 },
     { shape: "diamond", x: 870, y: 765, w: 180, h: 96, role: "tutor", title: ["Accepts", "the lead?"], n: 9 },
     { shape: "pill", tone: "warn", x: 1050, y: 765, w: 120, h: 56, title: ["Declined or", "no reply"] },
-    { x: 870, y: 885, w: 210, h: 64, role: "tutor", title: "Contact unlocked", sub: "tutor calls the parent", n: 10 },
+    { x: 870, y: 885, w: 210, h: 64, role: "tutor", title: "Contact unlocked", sub: "lead charged to tutor's plan", n: 10 },
     { x: 150, y: 885, w: 200, h: 64, role: "parent", title: "Speaks with tutor", sub: "fixes a demo time", n: 11 },
     { x: 150, y: 1000, w: 200, h: 64, role: "parent", title: "Attends demo class", sub: "free trial session", n: 12 },
     { x: 870, y: 1000, w: 210, h: 64, role: "tutor", title: "Takes demo class", sub: "marks it DEMO_DONE", n: 12 },
@@ -477,7 +571,7 @@
     { n: 7, role: "admin", title: "Assigns a tutor", sub: "One tutor or a shortlist of 3", alert: "Tutor alerted · 24h to reply" },
     { n: 8, role: "tutor", title: "Reviews the lead", sub: "Parent's number still hidden" },
     { n: 9, role: "tutor", decision: true, title: "Accepts the lead?", branch: [{ tone: "good", text: "Yes → step 10" }, { tone: "warn", text: "Declined or no reply → back to step 6" }] },
-    { n: 10, role: "tutor", title: "Contact unlocked", sub: "Tutor calls the parent", alert: "Tutor profile sent to parent" },
+    { n: 10, role: "tutor", title: "Contact unlocked", sub: "Lead charged to tutor's plan, then the tutor calls the parent", alert: "Tutor profile sent to parent" },
     { n: 11, role: "parent", title: "Speaks with tutor", sub: "Fixes a demo time" },
     { n: 12, role: "both", title: "Demo class", sub: "Free trial session; tutor marks it DEMO_DONE" },
     { n: 13, role: "admin", title: "Collects feedback", sub: "From parent and tutor" },
