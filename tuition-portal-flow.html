@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuition Portal Flow</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; }
+  [hidden] { display: none !important; }
+  /* Layout: one reading column; diagrams run full container width in swimlanes, scrolling sideways on phones */
+  :root {
+    --bg: #F2F4F3; --surface: #FFFFFF; --fg: #17201D; --muted: #5A6661; --line: #7C8883; --rule: #D9E0DC;
+    --parent: #2A67A8; --parent-tint: #E4EEF8;
+    --admin: #5B47B0; --admin-tint: #ECE9F8;
+    --tutor: #B9650C; --tutor-tint: #FBEFDF;
+    --good: #1C7F46; --good-tint: #E1F3E8;
+    --warn: #A86A0F; --warn-tint: #FAF0D9;
+    --bad: #B83A34; --bad-tint: #FAE5E3;
+    --notify: #12735A; --notify-tint: #DCF2EA;
+    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111615; --surface: #1A2120; --fg: #E6ECE9; --muted: #9AA6A1; --line: #7F8C87; --rule: #2A3431;
+      --parent: #74AAE6; --parent-tint: #16263A;
+      --admin: #A69AF0; --admin-tint: #221E3C;
+      --tutor: #EBA24E; --tutor-tint: #31220F;
+      --good: #5BC98A; --good-tint: #132E22;
+      --warn: #E2B157; --warn-tint: #31270F;
+      --bad: #EE7B74; --bad-tint: #381917;
+      --notify: #52CBA0; --notify-tint: #102E27;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111615; --surface: #1A2120; --fg: #E6ECE9; --muted: #9AA6A1; --line: #7F8C87; --rule: #2A3431;
+    --parent: #74AAE6; --parent-tint: #16263A;
+    --admin: #A69AF0; --admin-tint: #221E3C;
+    --tutor: #EBA24E; --tutor-tint: #31220F;
+    --good: #5BC98A; --good-tint: #132E22;
+    --warn: #E2B157; --warn-tint: #31270F;
+    --bad: #EE7B74; --bad-tint: #381917;
+    --notify: #52CBA0; --notify-tint: #102E27;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--fg); font: 400 16px/1.55 var(--font-body); }
+  .wrap {
+    max-width: 1160px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 48px 64px;
+    display: grid; gap: 56px;
+  }
+
+  header { display: grid; gap: 14px; max-width: 760px; }
+  .eyebrow { font: 600 12px/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--tutor); }
+  h1, h2 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.05; font-weight: 700; letter-spacing: -.02em; }
+  h2 { font-size: 1.55rem; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; }
+  .lede { margin: 0; color: var(--muted); font-size: 1.08rem; max-width: 62ch; }
+
+  section { display: grid; gap: 18px; min-width: 0; }
+  .sec-head { display: grid; gap: 6px; max-width: 70ch; }
+  .sec-head p { margin: 0; color: var(--muted); }
+
+  .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .role { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+  .role h3 { margin: 0; font: 700 1rem/1.3 var(--font-body); display: flex; align-items: center; gap: 8px; }
+  .role p { margin: 0; color: var(--muted); font-size: .94rem; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .dot.parent { background: var(--parent); } .dot.admin { background: var(--admin); } .dot.tutor { background: var(--tutor); }
+  .dot.notify { background: var(--notify); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: .88rem; color: var(--muted); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .lg { display: inline-block; border: 1.5px solid var(--line); background: var(--surface); }
+  .lg.step { width: 22px; height: 14px; border-radius: 4px; }
+  .lg.pill { width: 26px; height: 14px; border-radius: 7px; }
+  .lg.dia { width: 12px; height: 12px; transform: rotate(45deg); margin: 0 3px; }
+  .lg.chip { width: 26px; height: 14px; border-radius: 7px; background: var(--notify-tint); border-color: var(--notify); }
+  .lg.num { width: 18px; height: 18px; border-radius: 50%; border: 0; background: var(--admin); color: var(--surface); font: 700 10px/18px var(--font-body); text-align: center; }
+
+  .diagram { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow-x: auto; }
+  .diagram svg { display: block; width: 100%; min-width: 880px; height: auto; }
+  .scroll-hint { display: none; margin: 0; font-size: .85rem; color: var(--muted); }
+  @media (min-width: 721px) and (max-width: 900px) { .scroll-hint { display: block; } }
+
+  /* Phone layout: vertical step list replaces the wide swimlane diagrams */
+  .mflow { display: none; list-style: none; margin: 0; padding: 0; }
+  .mflow li { display: grid; }
+  .mflow li:not(:last-child)::after { content: "↓"; color: var(--line); font-size: 18px; line-height: 1; padding: 6px 0 6px 22px; }
+  .m-card { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; align-items: start; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .m-card.no-num { grid-template-columns: minmax(0, 1fr); }
+  .r-parent .m-card, .r-both .m-card { border-color: var(--parent); }
+  .r-admin .m-card { border-color: var(--admin); }
+  .r-tutor .m-card { border-color: var(--tutor); }
+  .decision .m-card { border-style: dashed; }
+  .t-good .m-card { background: var(--good-tint); border-color: var(--good); }
+  .m-num { width: 26px; height: 26px; border-radius: 50%; background: var(--admin); color: var(--surface); font: 700 12px/26px var(--font-body); text-align: center; }
+  .r-parent .m-num, .r-both .m-num { background: var(--parent); }
+  .r-tutor .m-num { background: var(--tutor); }
+  .m-body { display: grid; gap: 3px; min-width: 0; }
+  .m-body strong { font-size: 1rem; line-height: 1.35; }
+  .m-role { font: 700 11px/1.4 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--admin); }
+  .r-parent .m-role, .r-both .m-role { color: var(--parent); }
+  .r-tutor .m-role { color: var(--tutor); }
+  .t-good .m-role { color: var(--good); }
+  .m-sub { color: var(--muted); font-size: .9rem; }
+  .m-branch, .m-alert { justify-self: start; font-size: .84rem; font-weight: 600; line-height: 1.35; padding: 3px 10px; border-radius: 999px; border: 1px solid; margin-top: 4px; }
+  .m-branch.good { color: var(--good); background: var(--good-tint); border-color: var(--good); }
+  .m-branch.warn { color: var(--warn); background: var(--warn-tint); border-color: var(--warn); }
+  .m-branch.bad { color: var(--bad); background: var(--bad-tint); border-color: var(--bad); }
+  .m-alert { display: inline-flex; align-items: center; gap: 6px; color: var(--notify); background: var(--notify-tint); border-color: var(--notify); }
+  .m-alert::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--notify); flex: none; }
+
+  @media (max-width: 720px) {
+    .wrap { padding-block: 32px 48px; gap: 44px; }
+    .diagram.wide { display: none; }
+    .mflow { display: grid; }
+  }
+
+  /* Phone layout: status table becomes stacked cards */
+  @media (max-width: 600px) {
+    .table-wrap { background: none; border: 0; border-radius: 0; }
+    table { min-width: 0; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; }
+    tbody { display: grid; gap: 10px; }
+    tr { display: grid; gap: 8px; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; }
+    td { padding: 0; border: 0; }
+    td::before { content: attr(data-label); display: block; font: 600 11px/1.6 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    td:first-child::before { content: none; }
+  }
+
+  /* SVG styling */
+  .lane-body { opacity: .55; }
+  .l-parent { fill: var(--parent-tint); } .l-admin { fill: var(--admin-tint); } .l-tutor { fill: var(--tutor-tint); }
+  .lane-sep { stroke: var(--rule); stroke-width: 1; }
+  .lane-h { font: 700 12px var(--font-body); letter-spacing: .1em; text-transform: uppercase; }
+  .h-parent { fill: var(--parent); } .h-admin { fill: var(--admin); } .h-tutor { fill: var(--tutor); }
+  .shape { fill: var(--surface); stroke-width: 1.6; }
+  .r-parent .shape { stroke: var(--parent); } .r-admin .shape { stroke: var(--admin); } .r-tutor .shape { stroke: var(--tutor); }
+  .r-parent.start .shape { fill: var(--parent-tint); } .r-tutor.start .shape { fill: var(--tutor-tint); }
+  .t-good .shape { fill: var(--good-tint); stroke: var(--good); }
+  .t-warn .shape { fill: var(--warn-tint); stroke: var(--warn); }
+  .t-bad .shape { fill: var(--bad-tint); stroke: var(--bad); }
+  .n-title { font: 600 14px var(--font-body); fill: var(--fg); }
+  .side .n-title { font-size: 13px; }
+  .n-sub { font: 400 12px var(--font-body); fill: var(--muted); }
+  .edge { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-linejoin: round; }
+  .edge.dash { stroke-dasharray: 5 5; }
+  .arrowhead { fill: var(--line); }
+  .e-label { font: 600 12px var(--font-body); fill: var(--muted); }
+  .chip { fill: var(--notify-tint); stroke: var(--notify); stroke-width: 1; }
+  .chip-t { font: 600 11.5px var(--font-body); fill: var(--notify); }
+  .bell { fill: var(--notify); }
+  .b-parent { fill: var(--parent); } .b-admin { fill: var(--admin); } .b-tutor { fill: var(--tutor); }
+  .badge-t { font: 700 11px var(--font-body); fill: var(--surface); }
+
+  /* Status pipeline */
+  .pipeline { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 6px; align-items: center; }
+  .pipeline li { display: inline-flex; align-items: center; gap: 6px; }
+  .pipeline li:not(:last-child)::after { content: "→"; color: var(--line); padding-inline: 2px; }
+  .code { font: 500 12.5px/1 var(--font-mono); padding: 7px 10px; border-radius: 6px; background: var(--surface); border: 1px solid var(--rule); white-space: nowrap; }
+  .code.good { background: var(--good-tint); border-color: var(--good); color: var(--good); }
+  .code.warn { background: var(--warn-tint); border-color: var(--warn); color: var(--warn); }
+  .code.bad { background: var(--bad-tint); border-color: var(--bad); color: var(--bad); }
+  .code.muted { color: var(--muted); }
+
+  .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .94rem; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font: 600 12px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+
+  .decisions { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+  .decisions li { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+  .decisions strong { font-size: 1rem; }
+  .decisions span { color: var(--muted); font-size: .94rem; }
+
+  footer { color: var(--muted); font-size: .85rem; border-top: 1px solid var(--rule); padding-top: 16px; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Home tuition platform · process flow</div>
+    <h1>How a tuition request becomes a paid class</h1>
+    <p class="lede">A parent posts what their child needs. Our admin team checks the request and picks the right tutor. The tutor takes it through a demo class to regular tuition. This page shows each step and who does it.</p>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <h2>Who is involved</h2>
+    </div>
+    <div class="roles">
+      <div class="role"><h3><i class="dot parent"></i>Parent / student</h3><p>Posts a requirement in about a minute. No account needed; the phone number is verified by OTP.</p></div>
+      <div class="role"><h3><i class="dot admin"></i>Admin team</h3><p>Calls every new lead, chooses the tutor, and follows up until the tuition starts.</p></div>
+      <div class="role"><h3><i class="dot tutor"></i>Tutor</h3><p>Keeps a verified profile, receives matched leads, and accepts or declines within 24 hours.</p></div>
+      <div class="role"><h3><i class="dot notify"></i>Automatic alerts</h3><p>WhatsApp and SMS messages the system sends at each hand-off, so nobody has to check the site.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Lead journey, start to finish</h2>
+      <p>Read top to bottom. Each column is one person; arrows that cross columns are hand-offs.</p>
+    </div>
+    <div class="legend">
+      <span><i class="lg pill"></i>Start / end</span>
+      <span><i class="lg step"></i>Step</span>
+      <span><i class="lg dia"></i>Decision</span>
+      <span><i class="lg chip"></i>Automatic alert</span>
+      <span><i class="lg num">6</i>Step number</span>
+    </div>
+    <p class="scroll-hint">Swipe sideways to see all three columns.</p>
+    <div class="diagram wide">
+      <svg id="lead-flow" viewBox="0 0 1120 1390" role="img" aria-label="Swimlane flowchart of a lead moving from parent to admin to tutor until the tuition is converted"></svg>
+    </div>
+    <ol class="mflow" id="lead-mobile" aria-label="Lead journey steps"></ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Tutor onboarding</h2>
+      <p>Only approved tutors appear on the admin's matching screen. Rejected profiles go back to the tutor with a reason.</p>
+    </div>
+    <p class="scroll-hint">Swipe sideways to see the full flow.</p>
+    <div class="diagram wide">
+      <svg id="tutor-flow" viewBox="0 0 1120 280" role="img" aria-label="Flowchart of tutor sign-up, profile, KYC upload and admin approval"></svg>
+    </div>
+    <ol class="mflow" id="tutor-mobile" aria-label="Tutor onboarding steps"></ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Lead status at each stage</h2>
+      <p>Every lead carries one status. Each change is logged with who made it and when, so the admin team always sees the full history.</p>
+    </div>
+    <ol class="pipeline">
+      <li><span class="code">NEW</span></li>
+      <li><span class="code">VERIFIED</span></li>
+      <li><span class="code">MATCHING</span></li>
+      <li><span class="code">ASSIGNED</span></li>
+      <li><span class="code">ACCEPTED</span></li>
+      <li><span class="code">DEMO_SCHEDULED</span></li>
+      <li><span class="code">DEMO_DONE</span></li>
+      <li><span class="code good">CONVERTED</span></li>
+    </ol>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Side status</th><th>When it happens</th><th>What happens next</th></tr></thead>
+        <tbody>
+          <tr><td><span class="code bad">SPAM / DUPLICATE</span></td><td data-label="When it happens">The admin call at step 5 shows the lead is fake or already exists</td><td data-label="What happens next">Lead is closed</td></tr>
+          <tr><td><span class="code warn">DECLINED / EXPIRED</span></td><td data-label="When it happens">The tutor declines, or doesn't reply within 24 hours (step 9)</td><td data-label="What happens next">Back to <span class="code muted">MATCHING</span> for another tutor</td></tr>
+          <tr><td><span class="code warn">NOT_CONVERTED</span></td><td data-label="When it happens">The parent doesn't continue after the demo (step 14)</td><td data-label="What happens next">Back to <span class="code muted">MATCHING</span> for another tutor</td></tr>
+          <tr><td><span class="code muted">ON_HOLD</span></td><td data-label="When it happens">The parent asks to pause, at any stage</td><td data-label="What happens next">Admin gets a reminder on a follow-up date</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section hidden>
+    <div class="sec-head">
+      <h2>To decide before we build</h2>
+      <p>These choices change parts of the flow above.</p>
+    </div>
+    <ul class="decisions">
+      <li><strong>Revenue model</strong><span>Tutor subscription or credits, a commission on the first month's fee, or a parent registration fee. This decides when the parent's number unlocks (step 10).</span></li>
+      <li><strong>Launch scope</strong><span>Home tuition only, or online classes too. One city at launch, or several.</span></li>
+      <li><strong>Assignment style</strong><span>One tutor at a time, or a shortlist of 3 that the parent chooses from (step 7).</span></li>
+      <li><strong>Reply window</strong><span>24 hours is suggested for tutors to accept. A shorter window gets parents matched faster.</span></li>
+    </ul>
+  </section>
+
+  <footer>Draft for discussion · 20 October 2026</footer>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  function mk(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  function defs(svg, id) {
+    const d = mk("defs", {}, svg);
+    const m = mk("marker", { id: id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 6.5, markerHeight: 6.5, orient: "auto-start-reverse" }, d);
+    mk("path", { d: "M0,0 L10,5 L0,10 z", class: "arrowhead" }, m);
+  }
+
+  function addText(g, cx, cy, title, sub) {
+    title = [].concat(title); sub = sub ? [].concat(sub) : [];
+    const TL = 17, SL = 15, gap = sub.length ? 3 : 0;
+    const total = title.length * TL + gap + sub.length * SL;
+    let top = cy - total / 2;
+    const t = mk("text", { "text-anchor": "middle" }, g);
+    title.forEach((s, i) => { mk("tspan", { x: cx, y: top + TL * (i + 1) - 4, class: "n-title" }, t).textContent = s; });
+    top += title.length * TL + gap;
+    sub.forEach((s, i) => { mk("tspan", { x: cx, y: top + SL * (i + 1) - 3, class: "n-sub" }, t).textContent = s; });
+  }
+
+  function node(svg, n) {
+    const cls = ["node"];
+    if (n.role) cls.push("r-" + n.role);
+    if (n.tone) cls.push("t-" + n.tone, "side");
+    if (n.start) cls.push("start");
+    const g = mk("g", { class: cls.join(" ") }, svg);
+    const { x, y, w, h } = n;
+    if (n.shape === "diamond") {
+      mk("polygon", { class: "shape", points: `${x},${y - h / 2} ${x + w / 2},${y} ${x},${y + h / 2} ${x - w / 2},${y}` }, g);
+    } else {
+      mk("rect", { class: "shape", x: x - w / 2, y: y - h / 2, width: w, height: h, rx: n.shape === "pill" ? 22 : 10 }, g);
+    }
+    addText(g, x, y, n.title, n.sub);
+    if (n.n) {
+      const bx = n.shape === "diamond" ? x - w / 4 - 2 : x - w / 2 + 14;
+      const by = n.shape === "diamond" ? y - h / 4 - 2 : y - h / 2;
+      mk("circle", { cx: bx, cy: by, r: 10, class: "b-" + (n.role || "admin") }, g);
+      mk("text", { x: bx, y: by + 4, "text-anchor": "middle", class: "badge-t" }, g).textContent = n.n;
+    }
+  }
+
+  function edge(svg, pts, markerId, dashed) {
+    const a = { class: "edge" + (dashed ? " dash" : ""), points: pts.map(p => p.join(",")).join(" ") };
+    if (!dashed) a["marker-end"] = `url(#${markerId})`;
+    mk("polyline", a, svg);
+  }
+
+  function label(svg, x, y, s, anchor) {
+    mk("text", { x, y, "text-anchor": anchor || "middle", class: "e-label" }, svg).textContent = s;
+  }
+
+  function chip(svg, cx, cy, s) {
+    const w = s.length * 6.1 + 34, left = cx - w / 2;
+    const g = mk("g", {}, svg);
+    mk("rect", { x: left, y: cy - 11, width: w, height: 22, rx: 11, class: "chip" }, g);
+    const bx = left + 14, by = cy - 0.5;
+    mk("path", { class: "bell", d: `M${bx - 4.5},${by + 2.5} h9 l-1.3,-1.6 v-2.6 a3.2,3.2 0 0 0 -6.4,0 v2.6 z M${bx - 1.3},${by + 3.6} a1.3,1.3 0 0 0 2.6,0 z` }, g);
+    mk("text", { x: left + 24, y: cy + 4, class: "chip-t" }, g).textContent = s;
+  }
+
+  /* ---------- Lead journey ---------- */
+  const lead = document.getElementById("lead-flow");
+  const H = 1390;
+  defs(lead, "arrow-lead");
+  [
+    { x: 0, w: 300, role: "parent", label: "Parent / student" },
+    { x: 300, w: 420, role: "admin", label: "Admin team" },
+    { x: 720, w: 400, role: "tutor", label: "Tutor" }
+  ].forEach((l, i) => {
+    mk("rect", { x: l.x, y: 0, width: l.w, height: H, class: "lane-body l-" + l.role }, lead);
+    mk("rect", { x: l.x, y: 0, width: l.w, height: 52, class: "l-" + l.role }, lead);
+    mk("text", { x: l.x + 22, y: 31, class: "lane-h h-" + l.role }, lead).textContent = l.label;
+    if (i) mk("line", { x1: l.x, y1: 0, x2: l.x, y2: H, class: "lane-sep" }, lead);
+  });
+  mk("line", { x1: 0, y1: 52, x2: 1120, y2: 52, class: "lane-sep" }, lead);
+
+  const A = "arrow-lead";
+  [
+    [[150, 127], [150, 162]],
+    [[150, 238], [150, 278]],
+    [[250, 310], [365, 310]],
+    [[470, 342], [470, 372]],
+    [[560, 420], [585, 420]],
+    [[470, 468], [470, 507]],
+    [[470, 583], [470, 618]],
+    [[575, 650], [765, 650]],
+    [[870, 682], [870, 717]],
+    [[960, 765], [990, 765]],
+    [[1050, 737], [1050, 545], [575, 545]],
+    [[870, 813], [870, 853]],
+    [[765, 885], [250, 885]],
+    [[150, 917], [150, 968]],
+    [[870, 917], [870, 968]],
+    [[150, 1032], [150, 1110], [365, 1110]],
+    [[870, 1032], [870, 1110], [575, 1110]],
+    [[470, 1142], [470, 1177]],
+    [[560, 1225], [585, 1225]],
+    [[470, 1273], [470, 1309]]
+  ].forEach(p => edge(lead, p, A));
+  edge(lead, [[250, 1000], [765, 1000]], A, true);
+
+  [
+    { shape: "pill", role: "parent", start: true, x: 150, y: 105, w: 200, h: 44, title: "Parent visits the site", n: 1 },
+    { x: 150, y: 200, w: 200, h: 76, role: "parent", title: "Fills ‘Find a Tutor’ form", sub: ["class, board, subjects,", "area, budget, timings"], n: 2 },
+    { x: 150, y: 310, w: 200, h: 64, role: "parent", title: "Verifies phone by OTP", sub: "lead saved as NEW", n: 3 },
+    { x: 470, y: 310, w: 210, h: 64, role: "admin", title: "Calls the parent", sub: "confirms needs and budget", n: 4 },
+    { shape: "diamond", x: 470, y: 420, w: 180, h: 96, role: "admin", title: ["Genuine", "lead?"], n: 5 },
+    { shape: "pill", tone: "bad", x: 650, y: 420, w: 130, h: 52, title: "Spam / duplicate", sub: "lead closed" },
+    { x: 470, y: 545, w: 210, h: 76, role: "admin", title: "Matching screen", sub: ["tutors ranked by subject,", "distance, fee, rating"], n: 6 },
+    { x: 470, y: 650, w: 210, h: 64, role: "admin", title: "Assigns a tutor", sub: "one tutor or a shortlist of 3", n: 7 },
+    { x: 870, y: 650, w: 210, h: 64, role: "tutor", title: "Reviews the lead", sub: "parent's number still hidden", n: 8 },
+    { shape: "diamond", x: 870, y: 765, w: 180, h: 96, role: "tutor", title: ["Accepts", "the lead?"], n: 9 },
+    { shape: "pill", tone: "warn", x: 1050, y: 765, w: 120, h: 56, title: ["Declined or", "no reply"] },
+    { x: 870, y: 885, w: 210, h: 64, role: "tutor", title: "Contact unlocked", sub: "tutor calls the parent", n: 10 },
+    { x: 150, y: 885, w: 200, h: 64, role: "parent", title: "Speaks with tutor", sub: "fixes a demo time", n: 11 },
+    { x: 150, y: 1000, w: 200, h: 64, role: "parent", title: "Attends demo class", sub: "free trial session", n: 12 },
+    { x: 870, y: 1000, w: 210, h: 64, role: "tutor", title: "Takes demo class", sub: "marks it DEMO_DONE", n: 12 },
+    { x: 470, y: 1110, w: 210, h: 64, role: "admin", title: "Collects feedback", sub: "from parent and tutor", n: 13 },
+    { shape: "diamond", x: 470, y: 1225, w: 180, h: 96, role: "admin", title: ["Tuition", "started?"], n: 14 },
+    { shape: "pill", tone: "warn", x: 650, y: 1225, w: 130, h: 52, title: "Not converted", sub: "back to step 6" },
+    { shape: "pill", role: "admin", tone: "good", x: 470, y: 1335, w: 220, h: 52, title: "Converted", sub: "parent rates the tutor", n: 15 }
+  ].forEach(n => node(lead, n));
+
+  label(lead, 572, 411, "No");
+  label(lead, 480, 492, "Yes", "start");
+  label(lead, 975, 756, "No");
+  label(lead, 880, 837, "Yes", "start");
+  label(lead, 572, 1216, "No");
+  label(lead, 480, 1295, "Yes", "start");
+  label(lead, 905, 536, "back to step 6");
+  label(lead, 507, 991, "same session");
+
+  chip(lead, 307.5, 291, "Admin alerted");
+  chip(lead, 670, 631, "Tutor alerted · 24h");
+  chip(lead, 507, 866, "Tutor profile sent to parent");
+
+  /* ---------- Tutor onboarding ---------- */
+  const tf = document.getElementById("tutor-flow");
+  defs(tf, "arrow-tutor");
+  const B = "arrow-tutor";
+  [
+    [[165, 110], [205, 110]],
+    [[395, 110], [420, 110]],
+    [[620, 110], [645, 110]],
+    [[835, 110], [860, 110]],
+    [[950, 158], [950, 206]],
+    [[950, 62], [950, 30], [520, 30], [520, 72]]
+  ].forEach(p => edge(tf, p, B));
+  [
+    { shape: "pill", role: "tutor", start: true, x: 90, y: 110, w: 150, h: 44, title: "Tutor signs up" },
+    { x: 300, y: 110, w: 190, h: 64, role: "tutor", title: "Verifies phone", sub: "name, city, gender" },
+    { x: 520, y: 110, w: 200, h: 76, role: "tutor", title: "Builds profile", sub: ["subjects × classes,", "areas, fee, timings"] },
+    { x: 740, y: 110, w: 190, h: 64, role: "tutor", title: "Uploads KYC", sub: "ID and qualification" },
+    { shape: "diamond", x: 950, y: 110, w: 180, h: 96, role: "admin", title: ["Admin", "approves?"] },
+    { shape: "pill", tone: "good", x: 950, y: 232, w: 210, h: 52, title: "Profile goes live", sub: "eligible for matching" }
+  ].forEach(n => node(tf, n));
+  label(tf, 960, 186, "Yes", "start");
+  label(tf, 735, 22, "No · fix and resubmit");
+
+  /* ---------- Phone layout: same flows as vertical step lists ---------- */
+  const ROLE = { parent: "Parent / student", admin: "Admin team", tutor: "Tutor", both: "Parent + tutor" };
+  function mobileFlow(id, steps) {
+    const ol = document.getElementById(id);
+    steps.forEach(s => {
+      const li = document.createElement("li");
+      li.className = "r-" + s.role + (s.tone ? " t-" + s.tone : "") + (s.decision ? " decision" : "");
+      let html = `<div class="m-card${s.n ? "" : " no-num"}">`;
+      if (s.n) html += `<span class="m-num">${s.n}</span>`;
+      html += `<div class="m-body"><span class="m-role">${s.label || ((s.decision ? "Decision · " : "") + ROLE[s.role])}</span><strong>${s.title}</strong>`;
+      if (s.sub) html += `<span class="m-sub">${s.sub}</span>`;
+      (s.branch || []).forEach(b => { html += `<span class="m-branch ${b.tone}">${b.text}</span>`; });
+      if (s.alert) html += `<span class="m-alert">${s.alert}</span>`;
+      html += `</div></div>`;
+      li.innerHTML = html;
+      ol.appendChild(li);
+    });
+  }
+
+  mobileFlow("lead-mobile", [
+    { n: 1, role: "parent", title: "Parent visits the site" },
+    { n: 2, role: "parent", title: "Fills ‘Find a Tutor’ form", sub: "Class, board, subjects, area, budget, timings" },
+    { n: 3, role: "parent", title: "Verifies phone by OTP", sub: "Lead saved as NEW", alert: "Admin alerted" },
+    { n: 4, role: "admin", title: "Calls the parent", sub: "Confirms needs and budget" },
+    { n: 5, role: "admin", decision: true, title: "Genuine lead?", branch: [{ tone: "good", text: "Yes → step 6" }, { tone: "bad", text: "No → spam / duplicate, lead closed" }] },
+    { n: 6, role: "admin", title: "Matching screen", sub: "Tutors ranked by subject, distance, fee, rating" },
+    { n: 7, role: "admin", title: "Assigns a tutor", sub: "One tutor or a shortlist of 3", alert: "Tutor alerted · 24h to reply" },
+    { n: 8, role: "tutor", title: "Reviews the lead", sub: "Parent's number still hidden" },
+    { n: 9, role: "tutor", decision: true, title: "Accepts the lead?", branch: [{ tone: "good", text: "Yes → step 10" }, { tone: "warn", text: "Declined or no reply → back to step 6" }] },
+    { n: 10, role: "tutor", title: "Contact unlocked", sub: "Tutor calls the parent", alert: "Tutor profile sent to parent" },
+    { n: 11, role: "parent", title: "Speaks with tutor", sub: "Fixes a demo time" },
+    { n: 12, role: "both", title: "Demo class", sub: "Free trial session; tutor marks it DEMO_DONE" },
+    { n: 13, role: "admin", title: "Collects feedback", sub: "From parent and tutor" },
+    { n: 14, role: "admin", decision: true, title: "Tuition started?", branch: [{ tone: "good", text: "Yes → converted" }, { tone: "warn", text: "No → not converted, back to step 6" }] },
+    { n: 15, role: "admin", tone: "good", label: "Result", title: "Converted", sub: "Parent rates the tutor" }
+  ]);
+
+  mobileFlow("tutor-mobile", [
+    { role: "tutor", title: "Tutor signs up" },
+    { role: "tutor", title: "Verifies phone", sub: "Name, city, gender" },
+    { role: "tutor", title: "Builds profile", sub: "Subjects × classes, areas, fee, timings" },
+    { role: "tutor", title: "Uploads KYC", sub: "ID and qualification" },
+    { role: "admin", decision: true, title: "Admin approves?", branch: [{ tone: "good", text: "Yes → profile goes live" }, { tone: "warn", text: "No → tutor fixes profile and resubmits" }] },
+    { role: "admin", tone: "good", label: "Result", title: "Profile goes live", sub: "Eligible for matching" }
+  ]);
+})();
+</script>
+</body>
+</html>
