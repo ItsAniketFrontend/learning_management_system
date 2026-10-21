@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tuition Portal Flow</title>
+<title>Tuitionpedia Workflow</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
   *, *::before, *::after { box-sizing: border-box; }
   body { margin: 0; }
   [hidden] { display: none !important; }
-  /* Layout: one reading column; diagrams run full container width in swimlanes, scrolling sideways on phones */
+  /* Layout: one wide reading column; swimlane diagrams use the full width on desktop and become vertical step lists on phones */
   :root {
     --bg: #F2F4F3; --surface: #FFFFFF; --fg: #17201D; --muted: #5A6661; --line: #7C8883; --rule: #D9E0DC;
     --parent: #2A67A8; --parent-tint: #E4EEF8;
+    --system: #0D7A6F; --system-tint: #DDF1EE;
     --admin: #5B47B0; --admin-tint: #ECE9F8;
     --tutor: #B9650C; --tutor-tint: #FBEFDF;
     --good: #1C7F46; --good-tint: #E1F3E8;
     --warn: #A86A0F; --warn-tint: #FAF0D9;
     --bad: #B83A34; --bad-tint: #FAE5E3;
-    --notify: #12735A; --notify-tint: #DCF2EA;
-    --silver: #79848C; --gold: #A8780A; --diamond: #2482A8; --platinum: #66607F;
+    --free: #4E8A5E; --silver: #79848C; --gold: #A8780A; --diamond: #2482A8; --platinum: #66607F;
     --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
     --font-body: "Figtree", "Segoe UI", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
@@ -28,56 +28,57 @@
     :root:not([data-theme="light"]) {
       --bg: #111615; --surface: #1A2120; --fg: #E6ECE9; --muted: #9AA6A1; --line: #7F8C87; --rule: #2A3431;
       --parent: #74AAE6; --parent-tint: #16263A;
+      --system: #4FC7B8; --system-tint: #0F2D2A;
       --admin: #A69AF0; --admin-tint: #221E3C;
       --tutor: #EBA24E; --tutor-tint: #31220F;
       --good: #5BC98A; --good-tint: #132E22;
       --warn: #E2B157; --warn-tint: #31270F;
       --bad: #EE7B74; --bad-tint: #381917;
-      --notify: #52CBA0; --notify-tint: #102E27;
-      --silver: #B5BFC6; --gold: #E2B94E; --diamond: #7CCDEA; --platinum: #B7B1D3;
+      --free: #7CC48F; --silver: #B5BFC6; --gold: #E2B94E; --diamond: #7CCDEA; --platinum: #B7B1D3;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
     --bg: #111615; --surface: #1A2120; --fg: #E6ECE9; --muted: #9AA6A1; --line: #7F8C87; --rule: #2A3431;
     --parent: #74AAE6; --parent-tint: #16263A;
+    --system: #4FC7B8; --system-tint: #0F2D2A;
     --admin: #A69AF0; --admin-tint: #221E3C;
     --tutor: #EBA24E; --tutor-tint: #31220F;
     --good: #5BC98A; --good-tint: #132E22;
     --warn: #E2B157; --warn-tint: #31270F;
     --bad: #EE7B74; --bad-tint: #381917;
-    --notify: #52CBA0; --notify-tint: #102E27;
-    --silver: #B5BFC6; --gold: #E2B94E; --diamond: #7CCDEA; --platinum: #B7B1D3;
+    --free: #7CC48F; --silver: #B5BFC6; --gold: #E2B94E; --diamond: #7CCDEA; --platinum: #B7B1D3;
     color-scheme: dark;
   }
 
   body { background: var(--bg); color: var(--fg); font: 400 16px/1.55 var(--font-body); }
   .wrap {
-    max-width: 1160px; margin: 0 auto;
+    max-width: 1340px; margin: 0 auto;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
     padding-block: 48px 64px;
-    display: grid; gap: 56px;
+    display: grid; gap: 64px;
   }
 
-  header { display: grid; gap: 14px; max-width: 760px; }
+  header { display: grid; gap: 14px; max-width: 780px; }
   .eyebrow { font: 600 12px/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--tutor); }
   h1, h2 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
   h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.05; font-weight: 700; letter-spacing: -.02em; }
   h2 { font-size: 1.55rem; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; }
-  .lede { margin: 0; color: var(--muted); font-size: 1.08rem; max-width: 62ch; }
+  .lede { margin: 0; color: var(--muted); font-size: 1.08rem; max-width: 64ch; }
 
   section { display: grid; gap: 18px; min-width: 0; }
-  .sec-head { display: grid; gap: 6px; max-width: 70ch; }
+  .sec-head { display: grid; gap: 6px; max-width: 72ch; }
   .sec-head p { margin: 0; color: var(--muted); }
+  .sub-h { margin: 8px 0 0; font: 700 1.05rem/1.3 var(--font-body); }
 
   .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
   .role { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
   .role h3 { margin: 0; font: 700 1rem/1.3 var(--font-body); display: flex; align-items: center; gap: 8px; }
   .role p { margin: 0; color: var(--muted); font-size: .94rem; }
   .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .dot.parent { background: var(--parent); } .dot.admin { background: var(--admin); } .dot.tutor { background: var(--tutor); }
-  .dot.notify { background: var(--notify); }
+  .dot.parent { background: var(--parent); } .dot.system { background: var(--system); }
+  .dot.admin { background: var(--admin); } .dot.tutor { background: var(--tutor); }
 
   .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: .88rem; color: var(--muted); align-items: center; }
   .legend span { display: inline-flex; align-items: center; gap: 8px; }
@@ -85,49 +86,117 @@
   .lg.step { width: 22px; height: 14px; border-radius: 4px; }
   .lg.pill { width: 26px; height: 14px; border-radius: 7px; }
   .lg.dia { width: 12px; height: 12px; transform: rotate(45deg); margin: 0 3px; }
-  .lg.chip { width: 26px; height: 14px; border-radius: 7px; background: var(--notify-tint); border-color: var(--notify); }
+  .lg.chip { width: 26px; height: 14px; border-radius: 7px; background: var(--system-tint); border-color: var(--system); }
   .lg.num { width: 18px; height: 18px; border-radius: 50%; border: 0; background: var(--admin); color: var(--surface); font: 700 10px/18px var(--font-body); text-align: center; }
 
   .diagram { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow-x: auto; }
-  .diagram svg { display: block; width: 100%; min-width: 880px; height: auto; }
+  .diagram svg { display: block; width: 100%; min-width: 900px; height: auto; }
   .scroll-hint { display: none; margin: 0; font-size: .85rem; color: var(--muted); }
-  @media (min-width: 721px) and (max-width: 900px) { .scroll-hint { display: block; } }
+  @media (min-width: 721px) and (max-width: 1000px) { .scroll-hint { display: block; } }
 
-  /* Phone layout: vertical step list replaces the wide swimlane diagrams */
+  /* SVG styling */
+  .lane-body { opacity: .5; }
+  .l-parent { fill: var(--parent-tint); } .l-system { fill: var(--system-tint); }
+  .l-admin { fill: var(--admin-tint); } .l-tutor { fill: var(--tutor-tint); }
+  .lane-sep { stroke: var(--rule); stroke-width: 1; }
+  .lane-h { font: 700 12px var(--font-body); letter-spacing: .1em; text-transform: uppercase; }
+  .h-parent { fill: var(--parent); } .h-system { fill: var(--system); } .h-admin { fill: var(--admin); } .h-tutor { fill: var(--tutor); }
+  .h-muted { fill: var(--muted); }
+  .shape { fill: var(--surface); stroke-width: 1.6; }
+  .r-parent .shape { stroke: var(--parent); } .r-system .shape { stroke: var(--system); }
+  .r-admin .shape { stroke: var(--admin); } .r-tutor .shape { stroke: var(--tutor); }
+  .r-parent.start .shape { fill: var(--parent-tint); } .r-tutor.start .shape { fill: var(--tutor-tint); }
+  .r-system.start .shape { fill: var(--system-tint); }
+  .t-good .shape { fill: var(--good-tint); stroke: var(--good); }
+  .t-warn .shape { fill: var(--warn-tint); stroke: var(--warn); }
+  .t-bad .shape { fill: var(--bad-tint); stroke: var(--bad); }
+  .n-title { font: 600 14px var(--font-body); fill: var(--fg); }
+  .side .n-title { font-size: 13px; }
+  .n-sub { font: 400 12px var(--font-body); fill: var(--muted); }
+  .edge { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-linejoin: round; }
+  .edge.dash { stroke-dasharray: 5 5; }
+  .arrowhead { fill: var(--line); }
+  .e-label { font: 600 12px var(--font-body); fill: var(--muted); }
+  .chip { fill: var(--system-tint); stroke: var(--system); stroke-width: 1; }
+  .chip-t { font: 600 11.5px var(--font-body); fill: var(--system); }
+  .bell { fill: var(--system); }
+  .b-parent { fill: var(--parent); } .b-system { fill: var(--system); } .b-admin { fill: var(--admin); } .b-tutor { fill: var(--tutor); }
+  .badge-t { font: 700 11px var(--font-body); fill: var(--surface); }
+
+  /* Phone layout: vertical step lists replace the wide diagrams */
   .mflow { display: none; list-style: none; margin: 0; padding: 0; }
   .mflow li { display: grid; }
   .mflow li:not(:last-child)::after { content: "↓"; color: var(--line); font-size: 18px; line-height: 1; padding: 6px 0 6px 22px; }
+  .mflow .m-group { font: 700 12px/1.4 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 10px 0 8px; }
+  .mflow .m-group::after { content: none !important; }
   .m-card { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; align-items: start; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; }
   .m-card.no-num { grid-template-columns: minmax(0, 1fr); }
-  .r-parent .m-card, .r-both .m-card { border-color: var(--parent); }
-  .r-admin .m-card { border-color: var(--admin); }
-  .r-tutor .m-card { border-color: var(--tutor); }
+  .r-parent .m-card { border-color: var(--parent); } .r-system .m-card { border-color: var(--system); }
+  .r-admin .m-card { border-color: var(--admin); } .r-tutor .m-card { border-color: var(--tutor); }
   .decision .m-card { border-style: dashed; }
   .t-good .m-card { background: var(--good-tint); border-color: var(--good); }
   .m-num { width: 26px; height: 26px; border-radius: 50%; background: var(--admin); color: var(--surface); font: 700 12px/26px var(--font-body); text-align: center; }
-  .r-parent .m-num, .r-both .m-num { background: var(--parent); }
-  .r-tutor .m-num { background: var(--tutor); }
+  .r-parent .m-num { background: var(--parent); } .r-system .m-num { background: var(--system); } .r-tutor .m-num { background: var(--tutor); }
   .m-body { display: grid; gap: 3px; min-width: 0; }
   .m-body strong { font-size: 1rem; line-height: 1.35; }
   .m-role { font: 700 11px/1.4 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--admin); }
-  .r-parent .m-role, .r-both .m-role { color: var(--parent); }
-  .r-tutor .m-role { color: var(--tutor); }
+  .r-parent .m-role { color: var(--parent); } .r-system .m-role { color: var(--system); } .r-tutor .m-role { color: var(--tutor); }
   .t-good .m-role { color: var(--good); }
   .m-sub { color: var(--muted); font-size: .9rem; }
-  .m-branch, .m-alert { justify-self: start; font-size: .84rem; font-weight: 600; line-height: 1.35; padding: 3px 10px; border-radius: 999px; border: 1px solid; margin-top: 4px; }
+  .m-branch { justify-self: start; font-size: .84rem; font-weight: 600; line-height: 1.35; padding: 3px 10px; border-radius: 999px; border: 1px solid; margin-top: 4px; }
   .m-branch.good { color: var(--good); background: var(--good-tint); border-color: var(--good); }
   .m-branch.warn { color: var(--warn); background: var(--warn-tint); border-color: var(--warn); }
   .m-branch.bad { color: var(--bad); background: var(--bad-tint); border-color: var(--bad); }
-  .m-alert { display: inline-flex; align-items: center; gap: 6px; color: var(--notify); background: var(--notify-tint); border-color: var(--notify); }
-  .m-alert::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--notify); flex: none; }
-
   @media (max-width: 720px) {
-    .wrap { padding-block: 32px 48px; gap: 44px; }
-    .diagram.wide { display: none; }
+    .wrap { padding-block: 32px 48px; gap: 48px; }
+    .diagram.wide, .legend { display: none; }
     .mflow { display: grid; }
   }
 
-  /* Phone layout: status table becomes stacked cards */
+  /* Plans */
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .plan { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; display: grid; gap: 12px; align-content: start; }
+  .plan-head { display: grid; gap: 4px; }
+  .plan-name { margin: 0; font: 700 1.3rem/1.2 var(--font-display); display: flex; align-items: center; gap: 10px; }
+  .gem { width: 14px; height: 14px; transform: rotate(45deg); border-radius: 3px; flex: none; }
+  .free .gem { background: var(--free); } .silver .gem { background: var(--silver); } .gold .gem { background: var(--gold); }
+  .diamond .gem { background: var(--diamond); } .platinum .gem { background: var(--platinum); }
+  .plan-model { font: 600 11px/1.4 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .plan-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; font-variant-numeric: tabular-nums; min-height: 32px; }
+  .plan-price b { font: 700 1.9rem/1 var(--font-display); }
+  .plan-price span { color: var(--muted); font-size: .92rem; }
+  .plan-price .tbc { font: 600 .8rem/1 var(--font-body); color: var(--warn); background: var(--warn-tint); border: 1px solid var(--warn); border-radius: 999px; padding: 6px 10px; }
+  .plan p { margin: 0; color: var(--muted); font-size: .94rem; }
+  .plan dl { margin: 0; display: grid; border-top: 1px solid var(--rule); }
+  .plan dl div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: .9rem; }
+  .plan dt { color: var(--muted); }
+  .plan dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+  .note { margin: 0; color: var(--muted); font-size: .9rem; }
+
+  /* Numbered step cards */
+  .steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .steps li { counter-increment: s; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .steps li::before { content: counter(s); width: 26px; height: 26px; border-radius: 50%; background: var(--admin); color: var(--surface); font: 700 12px/26px var(--font-body); text-align: center; }
+  .steps div { display: grid; gap: 4px; min-width: 0; }
+  .steps strong { font-size: 1rem; }
+  .steps span { color: var(--muted); font-size: .92rem; }
+  .steps .opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .steps .opts span { font-size: .8rem; font-weight: 600; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--rule); color: var(--fg); }
+
+  /* Status pipeline + tables */
+  .pipeline { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 6px; align-items: center; }
+  .pipeline li { display: inline-flex; align-items: center; gap: 6px; }
+  .pipeline li:not(:last-child)::after { content: "→"; color: var(--line); padding-inline: 2px; }
+  .code { font: 500 12.5px/1 var(--font-mono); padding: 7px 10px; border-radius: 6px; background: var(--surface); border: 1px solid var(--rule); white-space: nowrap; }
+  .code.good { background: var(--good-tint); border-color: var(--good); color: var(--good); }
+  .code.warn { background: var(--warn-tint); border-color: var(--warn); color: var(--warn); }
+  .code.bad { background: var(--bad-tint); border-color: var(--bad); color: var(--bad); }
+  .code.muted { color: var(--muted); }
+  .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .94rem; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font: 600 12px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
   @media (max-width: 600px) {
     .table-wrap { background: none; border: 0; border-radius: 0; }
     table { min-width: 0; }
@@ -140,75 +209,20 @@
     td:first-child::before { content: none; }
   }
 
-  /* SVG styling */
-  .lane-body { opacity: .55; }
-  .l-parent { fill: var(--parent-tint); } .l-admin { fill: var(--admin-tint); } .l-tutor { fill: var(--tutor-tint); }
-  .lane-sep { stroke: var(--rule); stroke-width: 1; }
-  .lane-h { font: 700 12px var(--font-body); letter-spacing: .1em; text-transform: uppercase; }
-  .h-parent { fill: var(--parent); } .h-admin { fill: var(--admin); } .h-tutor { fill: var(--tutor); }
-  .shape { fill: var(--surface); stroke-width: 1.6; }
-  .r-parent .shape { stroke: var(--parent); } .r-admin .shape { stroke: var(--admin); } .r-tutor .shape { stroke: var(--tutor); }
-  .r-parent.start .shape { fill: var(--parent-tint); } .r-tutor.start .shape { fill: var(--tutor-tint); }
-  .t-good .shape { fill: var(--good-tint); stroke: var(--good); }
-  .t-warn .shape { fill: var(--warn-tint); stroke: var(--warn); }
-  .t-bad .shape { fill: var(--bad-tint); stroke: var(--bad); }
-  .n-title { font: 600 14px var(--font-body); fill: var(--fg); }
-  .side .n-title { font-size: 13px; }
-  .n-sub { font: 400 12px var(--font-body); fill: var(--muted); }
-  .edge { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-linejoin: round; }
-  .edge.dash { stroke-dasharray: 5 5; }
-  .arrowhead { fill: var(--line); }
-  .e-label { font: 600 12px var(--font-body); fill: var(--muted); }
-  .chip { fill: var(--notify-tint); stroke: var(--notify); stroke-width: 1; }
-  .chip-t { font: 600 11.5px var(--font-body); fill: var(--notify); }
-  .bell { fill: var(--notify); }
-  .b-parent { fill: var(--parent); } .b-admin { fill: var(--admin); } .b-tutor { fill: var(--tutor); }
-  .badge-t { font: 700 11px var(--font-body); fill: var(--surface); }
+  /* Automations */
+  .auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .auto > div { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; display: grid; gap: 12px; align-content: start; }
+  .auto h3 { margin: 0; font: 700 1rem/1.3 var(--font-body); }
+  .auto p { margin: 0; color: var(--muted); font-size: .92rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .tags li { font-size: .86rem; font-weight: 600; padding: 5px 11px; border-radius: 999px; background: var(--system-tint); color: var(--system); border: 1px solid var(--system); }
 
-  /* Status pipeline */
-  .pipeline { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 6px; align-items: center; }
-  .pipeline li { display: inline-flex; align-items: center; gap: 6px; }
-  .pipeline li:not(:last-child)::after { content: "→"; color: var(--line); padding-inline: 2px; }
-  .code { font: 500 12.5px/1 var(--font-mono); padding: 7px 10px; border-radius: 6px; background: var(--surface); border: 1px solid var(--rule); white-space: nowrap; }
-  .code.good { background: var(--good-tint); border-color: var(--good); color: var(--good); }
-  .code.warn { background: var(--warn-tint); border-color: var(--warn); color: var(--warn); }
-  .code.bad { background: var(--bad-tint); border-color: var(--bad); color: var(--bad); }
-  .code.muted { color: var(--muted); }
-
-  .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; }
-  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .94rem; }
-  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  th { font: 600 12px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-  tr:last-child td { border-bottom: 0; }
-
-  /* Tutor plans */
-  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
-  .plan { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; display: grid; gap: 12px; align-content: start; }
-  .plan-head { display: grid; gap: 4px; }
-  .plan-name { margin: 0; font: 700 1.3rem/1.2 var(--font-display); display: flex; align-items: center; gap: 10px; }
-  .gem { width: 14px; height: 14px; transform: rotate(45deg); border-radius: 3px; flex: none; }
-  .silver .gem { background: var(--silver); } .gold .gem { background: var(--gold); }
-  .diamond .gem { background: var(--diamond); } .platinum .gem { background: var(--platinum); }
-  .plan-model { font: 600 11px/1.4 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-  .plan-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; font-variant-numeric: tabular-nums; }
-  .plan-price b { font: 700 1.9rem/1 var(--font-display); }
-  .plan-price span { color: var(--muted); font-size: .92rem; }
-  .plan-price .tbc { font: 600 .8rem/1 var(--font-body); color: var(--warn); background: var(--warn-tint); border: 1px solid var(--warn); border-radius: 999px; padding: 5px 10px; }
-  .plan p { margin: 0; color: var(--muted); font-size: .94rem; }
-  .plan dl { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); }
-  .plan dl div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: .9rem; }
-  .plan dt { color: var(--muted); }
-  .plan dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
-  .charging { margin: 0; padding: 0; list-style: none; counter-reset: c; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-  .charging li { counter-increment: c; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; align-items: start; font-size: .94rem; color: var(--muted); }
-  .charging li::before { content: counter(c); width: 26px; height: 26px; border-radius: 50%; background: var(--tutor); color: var(--surface); font: 700 12px/26px var(--font-body); text-align: center; }
-  .charging strong { color: var(--fg); }
-  .sub-h { margin: 6px 0 0; font: 700 1.05rem/1.3 var(--font-body); }
-
-  .decisions { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
-  .decisions li { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
-  .decisions strong { font-size: 1rem; }
-  .decisions span { color: var(--muted); font-size: .94rem; }
+  /* Phases */
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .phase { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
+  .phase .ph { font: 600 11px/1.4 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--tutor); }
+  .phase h3 { margin: 0; font: 700 1.15rem/1.25 var(--font-display); }
+  .phase ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: .92rem; display: grid; gap: 3px; }
 
   footer { color: var(--muted); font-size: .85rem; border-top: 1px solid var(--rule); padding-top: 16px; }
 </style>
@@ -217,38 +231,36 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">Home tuition platform · process flow</div>
-    <h1>How a tuition request becomes a paid class</h1>
-    <p class="lede">A parent posts what their child needs. Our admin team checks the request and picks the right tutor. The tutor takes it through a demo class to regular tuition. This page shows each step and who does it.</p>
+    <div class="eyebrow">Tuitionpedia · product workflow</div>
+    <h1>How Tuitionpedia turns a parent's request into a tuition</h1>
+    <p class="lede">A parent posts a requirement. The system checks it and finds matching tutors. The admin team reviews the match, interested tutors unlock the parent's contact with their plan credits, and the platform tracks the demo through to a placed tuition and ongoing support.</p>
   </header>
 
   <section>
-    <div class="sec-head">
-      <h2>Who is involved</h2>
-    </div>
+    <div class="sec-head"><h2>Who is involved</h2></div>
     <div class="roles">
-      <div class="role"><h3><i class="dot parent"></i>Parent / student</h3><p>Posts a requirement in about a minute. No account needed; the phone number is verified by OTP.</p></div>
-      <div class="role"><h3><i class="dot admin"></i>Admin team</h3><p>Calls every new lead, chooses the tutor, and follows up until the tuition starts.</p></div>
-      <div class="role"><h3><i class="dot tutor"></i>Tutor</h3><p>Keeps a verified profile, receives matched leads, and accepts or declines within 24 hours.</p></div>
-      <div class="role"><h3><i class="dot notify"></i>Automatic alerts</h3><p>WhatsApp and SMS messages the system sends at each hand-off, so nobody has to check the site.</p></div>
+      <div class="role"><h3><i class="dot parent"></i>Parent / student</h3><p>Searches tutors or posts a requirement, verifies their mobile by OTP, shortlists tutors and books a demo.</p></div>
+      <div class="role"><h3><i class="dot system"></i>Tuitionpedia system</h3><p>Validates requests, matches tutors, sends WhatsApp/SMS/email alerts, runs deadlines and reminders, and handles credits.</p></div>
+      <div class="role"><h3><i class="dot admin"></i>Admin & support</h3><p>Reviews matches, verifies tutors, follows up with parents, handles payments, tickets and complaints from one dashboard.</p></div>
+      <div class="role"><h3><i class="dot tutor"></i>Tutor</h3><p>Builds a verified profile, responds to lead alerts, unlocks contacts with plan credits and takes demo classes.</p></div>
     </div>
   </section>
 
   <section>
     <div class="sec-head">
       <h2>Lead journey, start to finish</h2>
-      <p>Read top to bottom. Each column is one person; arrows that cross columns are hand-offs.</p>
+      <p>Read top to bottom. Each column is one role; arrows that cross columns are hand-offs.</p>
     </div>
     <div class="legend">
       <span><i class="lg pill"></i>Start / end</span>
       <span><i class="lg step"></i>Step</span>
       <span><i class="lg dia"></i>Decision</span>
-      <span><i class="lg chip"></i>Automatic alert</span>
+      <span><i class="lg chip"></i>Automatic message</span>
       <span><i class="lg num">6</i>Step number</span>
     </div>
-    <p class="scroll-hint">Swipe sideways to see all three columns.</p>
+    <p class="scroll-hint">Swipe sideways to see all four columns.</p>
     <div class="diagram wide">
-      <svg id="lead-flow" viewBox="0 0 1120 1390" role="img" aria-label="Swimlane flowchart of a lead moving from parent to admin to tutor until the tuition is converted"></svg>
+      <svg id="lead-flow" viewBox="0 0 1360 2130" role="img" aria-label="Swimlane flowchart of a Tuitionpedia lead moving between parent, system, admin and tutor from requirement to placed tuition"></svg>
     </div>
     <ol class="mflow" id="lead-mobile" aria-label="Lead journey steps"></ol>
   </section>
@@ -256,124 +268,164 @@
   <section>
     <div class="sec-head">
       <h2>Tutor onboarding</h2>
-      <p>Only approved tutors appear on the admin's matching screen. Rejected profiles go back to the tutor with a reason.</p>
+      <p>Only tutors with approved documents appear in search and in matching. Documents stay private and are never shown on public profiles.</p>
     </div>
     <p class="scroll-hint">Swipe sideways to see the full flow.</p>
     <div class="diagram wide">
-      <svg id="tutor-flow" viewBox="0 0 1120 280" role="img" aria-label="Flowchart of tutor sign-up, profile, KYC upload and admin approval"></svg>
+      <svg id="tutor-flow" viewBox="0 0 1360 200" role="img" aria-label="Flowchart of tutor sign-up, profile, document upload, admin approval and plan choice"></svg>
     </div>
     <ol class="mflow" id="tutor-mobile" aria-label="Tutor onboarding steps"></ol>
   </section>
 
   <section>
     <div class="sec-head">
+      <h2>Plans, payment and contact unlock</h2>
+      <p>A plan only becomes active after the payment is confirmed on the server. A credit is only used when the tutor deliberately unlocks a contact, and never twice for the same lead.</p>
+    </div>
+    <p class="scroll-hint">Swipe sideways to see the full flow.</p>
+    <div class="diagram wide">
+      <svg id="plan-flow" viewBox="0 0 1360 540" role="img" aria-label="Flowchart of a tutor buying a plan and unlocking a parent's contact with a credit"></svg>
+    </div>
+    <ol class="mflow" id="plan-mobile" aria-label="Plan purchase and contact unlock steps"></ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
       <h2>Tutor plans</h2>
-      <p>Tutors pay to receive leads. They can pay per lead or buy a pack of leads at a lower cost per lead. Prices marked “to be confirmed” will be filled in once finalised.</p>
+      <p>Every approved tutor starts on Free and can upgrade at any time. Names, prices, validity and lead limits are editable by admin without code changes.</p>
     </div>
     <div class="plans">
+      <article class="plan free">
+        <div class="plan-head"><h3 class="plan-name"><i class="gem"></i>Free</h3><span class="plan-model">Starter</span></div>
+        <div class="plan-price"><b>₹0</b></div>
+        <p>Profile is listed in search and on city pages, and the tutor gets alerts for matching leads.</p>
+        <dl>
+          <div><dt>Contact unlocks</dt><dd>To be confirmed</dd></div>
+          <div><dt>Validity</dt><dd>No expiry</dd></div>
+        </dl>
+      </article>
       <article class="plan silver">
-        <div class="plan-head">
-          <h3 class="plan-name"><i class="gem"></i>Silver</h3>
-          <span class="plan-model">Pay per lead</span>
-        </div>
+        <div class="plan-head"><h3 class="plan-name"><i class="gem"></i>Silver</h3><span class="plan-model">Pay per lead</span></div>
         <div class="plan-price"><span class="tbc">Price per lead to be confirmed</span></div>
-        <p>No upfront cost. The tutor pays only for a lead they accept, at the moment they accept it.</p>
+        <p>No upfront cost. The tutor pays only for a lead they choose to unlock.</p>
         <dl>
           <div><dt>Leads</dt><dd>One at a time</dd></div>
-          <div><dt>Payment</dt><dd>On each accepted lead</dd></div>
-          <div><dt>Best for</dt><dd>New or part-time tutors</dd></div>
+          <div><dt>Payment</dt><dd>On each unlock</dd></div>
         </dl>
       </article>
       <article class="plan gold">
-        <div class="plan-head">
-          <h3 class="plan-name"><i class="gem"></i>Gold</h3>
-          <span class="plan-model">Lead pack</span>
-        </div>
+        <div class="plan-head"><h3 class="plan-name"><i class="gem"></i>Gold</h3><span class="plan-model">Lead pack</span></div>
         <div class="plan-price"><b>₹499</b><span>for 10 leads</span></div>
-        <p>The tutor buys 10 leads upfront. One lead is used each time they accept a request.</p>
+        <p>10 credits go into the tutor's wallet. One credit is used per unlocked contact.</p>
         <dl>
-          <div><dt>Leads</dt><dd>10</dd></div>
           <div><dt>Cost per lead</dt><dd>₹49.90</dd></div>
           <div><dt>Validity</dt><dd>To be confirmed</dd></div>
         </dl>
       </article>
       <article class="plan diamond">
-        <div class="plan-head">
-          <h3 class="plan-name"><i class="gem"></i>Diamond</h3>
-          <span class="plan-model">Lead pack</span>
-        </div>
+        <div class="plan-head"><h3 class="plan-name"><i class="gem"></i>Diamond</h3><span class="plan-model">Lead pack</span></div>
         <div class="plan-price"><span class="tbc">Price and leads to be confirmed</span></div>
-        <p>Same pack model as Gold. The tutor buys a set number of leads upfront and uses one per accepted request.</p>
+        <p>Same credit model as Gold, with a larger pack.</p>
         <dl>
-          <div><dt>Leads</dt><dd>To be confirmed</dd></div>
           <div><dt>Cost per lead</dt><dd>To be confirmed</dd></div>
           <div><dt>Validity</dt><dd>To be confirmed</dd></div>
         </dl>
       </article>
       <article class="plan platinum">
-        <div class="plan-head">
-          <h3 class="plan-name"><i class="gem"></i>Platinum</h3>
-          <span class="plan-model">Lead pack</span>
-        </div>
+        <div class="plan-head"><h3 class="plan-name"><i class="gem"></i>Platinum</h3><span class="plan-model">Lead pack</span></div>
         <div class="plan-price"><span class="tbc">Price and leads to be confirmed</span></div>
-        <p>Same pack model as Gold. The tutor buys a set number of leads upfront and uses one per accepted request.</p>
+        <p>Same credit model as Gold, with the largest pack.</p>
         <dl>
-          <div><dt>Leads</dt><dd>To be confirmed</dd></div>
           <div><dt>Cost per lead</dt><dd>To be confirmed</dd></div>
           <div><dt>Validity</dt><dd>To be confirmed</dd></div>
         </dl>
       </article>
     </div>
-    <h3 class="sub-h">How a lead is charged</h3>
-    <ol class="charging">
-      <li><span><strong>Tutor accepts a lead</strong> at step 9 of the lead journey.</span></li>
-      <li><span><strong>Silver</strong> tutors pay for that lead online by UPI or card. <strong>Gold, Diamond and Platinum</strong> tutors have one lead taken from their pack.</span></li>
-      <li><span><strong>Parent's contact unlocks</strong> (step 10). If a pack is empty, the tutor is asked to buy a new pack or pay for this one lead.</span></li>
-    </ol>
+    <p class="note">Checkout shows price, validity, included contact views, taxes and terms before payment. Tutors get receipts, payment history and an expiry reminder.</p>
   </section>
 
   <section>
     <div class="sec-head">
-      <h2>Lead status at each stage</h2>
-      <p>Every lead carries one status. Each change is logged with who made it and when, so the admin team always sees the full history.</p>
+      <h2>Status the parent sees</h2>
+      <p>Parents track their requirement on a dashboard or secure link, and get each change on WhatsApp, SMS or email when they have agreed to it. Every change is logged with who made it and when.</p>
     </div>
     <ol class="pipeline">
-      <li><span class="code">NEW</span></li>
-      <li><span class="code">VERIFIED</span></li>
+      <li><span class="code">SUBMITTED</span></li>
+      <li><span class="code">VERIFICATION_PENDING</span></li>
       <li><span class="code">MATCHING</span></li>
-      <li><span class="code">ASSIGNED</span></li>
-      <li><span class="code">ACCEPTED</span></li>
+      <li><span class="code">TUTOR_OPTIONS_SHARED</span></li>
       <li><span class="code">DEMO_SCHEDULED</span></li>
-      <li><span class="code">DEMO_DONE</span></li>
       <li><span class="code good">CONVERTED</span></li>
     </ol>
+    <h3 class="sub-h">Outcomes when a lead doesn't convert straight away</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Side status</th><th>When it happens</th><th>What happens next</th></tr></thead>
+        <thead><tr><th>Outcome</th><th>When it happens</th><th>What happens next</th></tr></thead>
         <tbody>
-          <tr><td><span class="code bad">SPAM / DUPLICATE</span></td><td data-label="When it happens">The admin call at step 5 shows the lead is fake or already exists</td><td data-label="What happens next">Lead is closed</td></tr>
-          <tr><td><span class="code warn">DECLINED / EXPIRED</span></td><td data-label="When it happens">The tutor declines, or doesn't reply within 24 hours (step 9)</td><td data-label="What happens next">Back to <span class="code muted">MATCHING</span> for another tutor</td></tr>
-          <tr><td><span class="code warn">NOT_CONVERTED</span></td><td data-label="When it happens">The parent doesn't continue after the demo (step 14)</td><td data-label="What happens next">Back to <span class="code muted">MATCHING</span> for another tutor</td></tr>
-          <tr><td><span class="code muted">ON_HOLD</span></td><td data-label="When it happens">The parent asks to pause, at any stage</td><td data-label="What happens next">Admin gets a reminder on a follow-up date</td></tr>
+          <tr><td><span class="code warn">FOLLOW_UP_REQUIRED</span></td><td data-label="When it happens">Parent needs time to decide, or the form is incomplete</td><td data-label="What happens next">Follow-up date set; reminder goes to support</td></tr>
+          <tr><td><span class="code warn">NO_SUITABLE_TUTOR</span></td><td data-label="When it happens">Matching finds no tutor (step 8)</td><td data-label="What happens next">Follow-up task; matching re-runs when new tutors join</td></tr>
+          <tr><td><span class="code warn">TUTOR_DECLINED</span></td><td data-label="When it happens">Tutor says not interested, misses the deadline, or drops out</td><td data-label="What happens next">Next tutor is matched automatically</td></tr>
+          <tr><td><span class="code warn">NOT_CONVERTED</span></td><td data-label="When it happens">Parent doesn't continue after the demo</td><td data-label="What happens next">Reason recorded; re-match or close</td></tr>
+          <tr><td><span class="code bad">PARENT_CANCELLED</span></td><td data-label="When it happens">Parent withdraws at any stage</td><td data-label="What happens next">Closed with a reason</td></tr>
+          <tr><td><span class="code muted">CLOSED</span></td><td data-label="When it happens">Duplicate or invalid request, or no further action</td><td data-label="What happens next">Kept in history; can be reopened by admin</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <section hidden>
+  <section>
     <div class="sec-head">
-      <h2>To decide before we build</h2>
-      <p>These choices change parts of the flow above.</p>
+      <h2>Support, complaints and safety</h2>
+      <p>Support stays available after placement. Parents and tutors can report a problem or block the other side at any time.</p>
     </div>
-    <ul class="decisions">
-      <li><strong>Revenue model</strong><span>Tutor subscription or credits, a commission on the first month's fee, or a parent registration fee. This decides when the parent's number unlocks (step 10).</span></li>
-      <li><strong>Launch scope</strong><span>Home tuition only, or online classes too. One city at launch, or several.</span></li>
-      <li><strong>Assignment style</strong><span>One tutor at a time, or a shortlist of 3 that the parent chooses from (step 7).</span></li>
-      <li><strong>Reply window</strong><span>24 hours is suggested for tutors to accept. A shorter window gets parents matched faster.</span></li>
-    </ul>
+    <ol class="steps">
+      <li><div><strong>Ticket or complaint raised</strong><span>By parent or tutor, with a category, details and optional evidence.</span></div></li>
+      <li><div><strong>Owner assigned</strong><span>Support picks it up and a response time (SLA) starts.</span></div></li>
+      <li><div><strong>Investigation</strong><span>Support talks to both sides and keeps notes. Overdue tickets escalate to admin.</span></div></li>
+      <li><div><strong>Resolution</strong><span>Closed with a satisfaction rating, or:</span><span class="opts"><span>Replacement tutor</span><span>Account suspended for review</span></span></div></li>
+    </ol>
+    <p class="note">Published safety guidance asks for a parent or guardian at first meetings, checking the tutor's identity, and agreeing fees and timings in writing.</p>
   </section>
 
-  <footer>Draft for discussion · 20 October 2026</footer>
+  <section>
+    <div class="sec-head">
+      <h2>What the system does automatically</h2>
+      <p>Messages respect each person's consent and opt-out settings, and are never sent twice for the same event.</p>
+    </div>
+    <div class="auto">
+      <div>
+        <h3>Messages on each event</h3>
+        <ul class="tags">
+          <li>OTP</li><li>Requirement received</li><li>Tutor matched</li><li>Lead expiring</li><li>Tutor interested</li>
+          <li>Contact unlocked</li><li>Payment success / failure</li><li>Plan expiring</li><li>Demo reminder</li>
+          <li>Status change</li><li>Ticket update</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Reminders and escalation</h3>
+        <ul class="tags">
+          <li>Unanswered leads</li><li>Documents awaiting review</li><li>Upcoming demos</li><li>Incomplete parent forms</li>
+          <li>Plan expiry</li><li>Stale requirements</li>
+        </ul>
+        <p>Anything overdue moves to the admin queue.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Build phases</h2>
+      <p>Each phase is usable on its own, so the platform can start taking leads after phase 1.</p>
+    </div>
+    <div class="phases">
+      <div class="phase"><span class="ph">Phase 1</span><h3>Core marketplace</h3><ul><li>Parent form with OTP</li><li>Tutor sign-up and profile</li><li>Admin verification</li><li>Tutor search</li><li>Manual matching</li><li>Basic notifications</li></ul></div>
+      <div class="phase"><span class="ph">Phase 2</span><h3>Leads and revenue</h3><ul><li>Automatic matching</li><li>Tutor interest actions</li><li>Plans and credit wallet</li><li>Payment gateway</li><li>Contact unlock</li></ul></div>
+      <div class="phase"><span class="ph">Phase 3</span><h3>Demos and retention</h3><ul><li>Demo scheduling and reminders</li><li>Conversion tracking</li><li>Parent and tutor dashboards</li><li>Support tickets</li><li>Reviews</li></ul></div>
+      <div class="phase"><span class="ph">Phase 4</span><h3>Scale and insight</h3><ul><li>Advanced reports</li><li>Locality SEO pages</li><li>Configurable automation rules</li><li>Fairer lead distribution</li><li>SLA dashboards</li></ul></div>
+    </div>
+  </section>
+
+  <footer>Tuitionpedia · workflow draft for discussion · 21 October 2026</footer>
 </div>
 
 <script>
@@ -385,13 +437,11 @@
     if (parent) parent.appendChild(e);
     return e;
   }
-
   function defs(svg, id) {
     const d = mk("defs", {}, svg);
     const m = mk("marker", { id: id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 6.5, markerHeight: 6.5, orient: "auto-start-reverse" }, d);
     mk("path", { d: "M0,0 L10,5 L0,10 z", class: "arrowhead" }, m);
   }
-
   function addText(g, cx, cy, title, sub) {
     title = [].concat(title); sub = sub ? [].concat(sub) : [];
     const TL = 17, SL = 15, gap = sub.length ? 3 : 0;
@@ -402,11 +452,11 @@
     top += title.length * TL + gap;
     sub.forEach((s, i) => { mk("tspan", { x: cx, y: top + SL * (i + 1) - 3, class: "n-sub" }, t).textContent = s; });
   }
-
   function node(svg, n) {
     const cls = ["node"];
     if (n.role) cls.push("r-" + n.role);
-    if (n.tone) cls.push("t-" + n.tone, "side");
+    if (n.tone) cls.push("t-" + n.tone);
+    if (n.side) cls.push("side");
     if (n.start) cls.push("start");
     const g = mk("g", { class: cls.join(" ") }, svg);
     const { x, y, w, h } = n;
@@ -423,17 +473,14 @@
       mk("text", { x: bx, y: by + 4, "text-anchor": "middle", class: "badge-t" }, g).textContent = n.n;
     }
   }
-
-  function edge(svg, pts, markerId, dashed) {
+  function edge(svg, pts, markerId, dashed, noArrow) {
     const a = { class: "edge" + (dashed ? " dash" : ""), points: pts.map(p => p.join(",")).join(" ") };
-    if (!dashed) a["marker-end"] = `url(#${markerId})`;
+    if (!noArrow) a["marker-end"] = `url(#${markerId})`;
     mk("polyline", a, svg);
   }
-
   function label(svg, x, y, s, anchor) {
     mk("text", { x, y, "text-anchor": anchor || "middle", class: "e-label" }, svg).textContent = s;
   }
-
   function chip(svg, cx, cy, s) {
     const w = s.length * 6.1 + 34, left = cx - w / 2;
     const g = mk("g", {}, svg);
@@ -443,118 +490,185 @@
     mk("text", { x: left + 24, y: cy + 4, class: "chip-t" }, g).textContent = s;
   }
 
-  /* ---------- Lead journey ---------- */
+  /* ---------- Lead journey (4 lanes) ---------- */
   const lead = document.getElementById("lead-flow");
-  const H = 1390;
-  defs(lead, "arrow-lead");
+  const H = 2130, A = "arrow-lead";
+  defs(lead, A);
   [
-    { x: 0, w: 300, role: "parent", label: "Parent / student" },
-    { x: 300, w: 420, role: "admin", label: "Admin team" },
-    { x: 720, w: 400, role: "tutor", label: "Tutor" }
+    { x: 0, w: 340, role: "parent", label: "Parent / student" },
+    { x: 340, w: 340, role: "system", label: "Tuitionpedia system" },
+    { x: 680, w: 340, role: "admin", label: "Admin & support" },
+    { x: 1020, w: 340, role: "tutor", label: "Tutor" }
   ].forEach((l, i) => {
     mk("rect", { x: l.x, y: 0, width: l.w, height: H, class: "lane-body l-" + l.role }, lead);
     mk("rect", { x: l.x, y: 0, width: l.w, height: 52, class: "l-" + l.role }, lead);
     mk("text", { x: l.x + 22, y: 31, class: "lane-h h-" + l.role }, lead).textContent = l.label;
     if (i) mk("line", { x1: l.x, y1: 0, x2: l.x, y2: H, class: "lane-sep" }, lead);
   });
-  mk("line", { x1: 0, y1: 52, x2: 1120, y2: 52, class: "lane-sep" }, lead);
+  mk("line", { x1: 0, y1: 52, x2: 1360, y2: 52, class: "lane-sep" }, lead);
 
-  const A = "arrow-lead";
   [
-    [[150, 127], [150, 162]],
-    [[150, 238], [150, 278]],
-    [[250, 310], [365, 310]],
-    [[470, 342], [470, 372]],
-    [[560, 420], [585, 420]],
-    [[470, 468], [470, 507]],
-    [[470, 583], [470, 618]],
-    [[575, 650], [765, 650]],
-    [[870, 682], [870, 717]],
-    [[960, 765], [990, 765]],
-    [[1050, 737], [1050, 545], [575, 545]],
-    [[870, 813], [870, 853]],
-    [[765, 885], [250, 885]],
-    [[150, 917], [150, 968]],
-    [[870, 917], [870, 968]],
-    [[150, 1032], [150, 1110], [365, 1110]],
-    [[870, 1032], [870, 1110], [575, 1110]],
-    [[470, 1142], [470, 1177]],
-    [[560, 1225], [585, 1225]],
-    [[470, 1273], [470, 1309]]
+    [[160, 138], [160, 183]],
+    [[160, 267], [160, 308]],
+    [[260, 340], [360, 340]],
+    [[460, 378], [460, 412]],
+    [[550, 460], [565, 460]],
+    [[460, 508], [460, 542]],
+    [[560, 595], [700, 595]],
+    [[800, 618], [800, 652]],
+    [[890, 700], [905, 700]],
+    [[800, 748], [800, 775], [460, 775], [460, 802]],
+    [[560, 840], [1040, 840]],
+    [[1140, 878], [1140, 912]],
+    [[1230, 960], [1245, 960]],
+    [[1300, 932], [1300, 520], [600, 520], [600, 565], [560, 565]],
+    [[1140, 1008], [1140, 1080], [900, 1080]],
+    [[700, 1080], [260, 1080]],
+    [[160, 1118], [160, 1200], [1050, 1200]],
+    [[1230, 1200], [1245, 1200]],
+    [[1140, 1248], [1140, 1282]],
+    [[1300, 1228], [1300, 1320], [1240, 1320]],
+    [[1140, 1358], [1140, 1450], [560, 1450]],
+    [[410, 1492], [410, 1580], [260, 1580]],
+    [[510, 1492], [510, 1580], [1040, 1580]],
+    [[160, 1612], [160, 1700], [700, 1700]],
+    [[1140, 1612], [1140, 1700], [900, 1700]],
+    [[800, 1738], [800, 1772]],
+    [[890, 1820], [905, 1820]],
+    [[800, 1868], [800, 1908]],
+    [[800, 1972], [800, 2060], [270, 2060]]
   ].forEach(p => edge(lead, p, A));
-  edge(lead, [[250, 1000], [765, 1000]], A, true);
 
   [
-    { shape: "pill", role: "parent", start: true, x: 150, y: 105, w: 200, h: 44, title: "Parent visits the site", n: 1 },
-    { x: 150, y: 200, w: 200, h: 76, role: "parent", title: "Fills ‘Find a Tutor’ form", sub: ["class, board, subjects,", "area, budget, timings"], n: 2 },
-    { x: 150, y: 310, w: 200, h: 64, role: "parent", title: "Verifies phone by OTP", sub: "lead saved as NEW", n: 3 },
-    { x: 470, y: 310, w: 210, h: 64, role: "admin", title: "Calls the parent", sub: "confirms needs and budget", n: 4 },
-    { shape: "diamond", x: 470, y: 420, w: 180, h: 96, role: "admin", title: ["Genuine", "lead?"], n: 5 },
-    { shape: "pill", tone: "bad", x: 650, y: 420, w: 130, h: 52, title: "Spam / duplicate", sub: "lead closed" },
-    { x: 470, y: 545, w: 210, h: 76, role: "admin", title: "Matching screen", sub: ["tutors ranked by subject,", "distance, fee, rating"], n: 6 },
-    { x: 470, y: 650, w: 210, h: 64, role: "admin", title: "Assigns a tutor", sub: "one tutor or a shortlist of 3", n: 7 },
-    { x: 870, y: 650, w: 210, h: 64, role: "tutor", title: "Reviews the lead", sub: "parent's number still hidden", n: 8 },
-    { shape: "diamond", x: 870, y: 765, w: 180, h: 96, role: "tutor", title: ["Accepts", "the lead?"], n: 9 },
-    { shape: "pill", tone: "warn", x: 1050, y: 765, w: 120, h: 56, title: ["Declined or", "no reply"] },
-    { x: 870, y: 885, w: 210, h: 64, role: "tutor", title: "Contact unlocked", sub: "lead charged to tutor's plan", n: 10 },
-    { x: 150, y: 885, w: 200, h: 64, role: "parent", title: "Speaks with tutor", sub: "fixes a demo time", n: 11 },
-    { x: 150, y: 1000, w: 200, h: 64, role: "parent", title: "Attends demo class", sub: "free trial session", n: 12 },
-    { x: 870, y: 1000, w: 210, h: 64, role: "tutor", title: "Takes demo class", sub: "marks it DEMO_DONE", n: 12 },
-    { x: 470, y: 1110, w: 210, h: 64, role: "admin", title: "Collects feedback", sub: "from parent and tutor", n: 13 },
-    { shape: "diamond", x: 470, y: 1225, w: 180, h: 96, role: "admin", title: ["Tuition", "started?"], n: 14 },
-    { shape: "pill", tone: "warn", x: 650, y: 1225, w: 130, h: 52, title: "Not converted", sub: "back to step 6" },
-    { shape: "pill", role: "admin", tone: "good", x: 470, y: 1335, w: 220, h: 52, title: "Converted", sub: "parent rates the tutor", n: 15 }
+    { shape: "pill", role: "parent", start: true, x: 160, y: 110, w: 220, h: 56, title: "Parent visits Tuitionpedia", sub: "home, city page or search", n: 1 },
+    { x: 160, y: 225, w: 200, h: 84, role: "parent", title: "Fills requirement form", sub: ["class, board, subjects, mode,", "locality, days, time,", "start date, budget"], n: 2 },
+    { x: 160, y: 340, w: 200, h: 64, role: "parent", title: "Verifies mobile OTP", sub: "and agrees to be contacted", n: 3 },
+    { x: 460, y: 340, w: 200, h: 76, role: "system", title: "Validates requirement", sub: ["duplicate check, required", "fields, locality cleanup"], n: 4 },
+    { shape: "diamond", x: 460, y: 460, w: 180, h: 96, role: "system", title: ["Valid and", "new?"], n: 5 },
+    { shape: "pill", tone: "warn", side: true, x: 620, y: 460, w: 110, h: 66, title: "Follow-up task", sub: ["support calls", "the parent"] },
+    { x: 460, y: 580, w: 200, h: 76, role: "system", title: "Auto-matches tutors", sub: ["class, subject, mode, radius,", "availability, budget, verified"], n: 6 },
+    { x: 800, y: 580, w: 200, h: 76, role: "admin", title: "Reviews the shortlist", sub: ["sees match reasons,", "can add or remove tutors"], n: 7 },
+    { shape: "diamond", x: 800, y: 700, w: 180, h: 96, role: "admin", title: ["Suitable", "tutors?"], n: 8 },
+    { shape: "pill", tone: "warn", side: true, x: 960, y: 700, w: 110, h: 66, title: ["No suitable", "tutor"], sub: "follow-up set" },
+    { x: 460, y: 840, w: 200, h: 76, role: "system", title: "Alerts matched tutors", sub: ["WhatsApp, SMS, email, app,", "with a reply deadline"], n: 9 },
+    { x: 1140, y: 840, w: 200, h: 76, role: "tutor", title: "Gets the lead alert", sub: ["parent's number hidden;", "can ask for details"], n: 10 },
+    { shape: "diamond", x: 1140, y: 960, w: 180, h: 96, role: "tutor", title: "Interested?", n: 11 },
+    { shape: "pill", tone: "warn", side: true, x: 1300, y: 960, w: 110, h: 56, title: ["Not interested", "or no reply"] },
+    { x: 800, y: 1080, w: 200, h: 76, role: "admin", title: "Shares tutor options", sub: ["approved profiles or a", "curated shortlist"], n: 12 },
+    { x: 160, y: 1080, w: 200, h: 76, role: "parent", title: "Reviews tutor profiles", sub: ["shortlists, asks for a", "callback or demo"], n: 13 },
+    { shape: "diamond", x: 1140, y: 1200, w: 180, h: 96, role: "tutor", title: ["Has lead", "credits?"], n: 14 },
+    { shape: "pill", tone: "warn", side: true, x: 1300, y: 1200, w: 110, h: 56, title: ["Buys a plan or", "pays per lead"] },
+    { x: 1140, y: 1320, w: 200, h: 76, role: "tutor", title: "Unlocks parent contact", sub: ["1 credit deducted once,", "confirmed by the server"], n: 15 },
+    { x: 460, y: 1450, w: 200, h: 84, role: "system", title: "Demo scheduled", sub: ["tutor proposes slots,", "parent confirms,", "reminders go to both"], n: 16 },
+    { x: 160, y: 1580, w: 200, h: 64, role: "parent", title: "Attends demo class", sub: "parent or guardian present", n: 17 },
+    { x: 1140, y: 1580, w: 200, h: 64, role: "tutor", title: "Takes demo class", sub: "marks attendance", n: 17 },
+    { x: 800, y: 1700, w: 200, h: 76, role: "admin", title: "Records demo outcome", sub: ["attendance, feedback,", "next action"], n: 18 },
+    { shape: "diamond", x: 800, y: 1820, w: 180, h: 96, role: "admin", title: ["Tuition", "started?"], n: 19 },
+    { shape: "pill", tone: "warn", side: true, x: 975, y: 1820, w: 140, h: 84, title: ["Not converted", "or follow-up"], sub: ["reason required;", "re-match or close"] },
+    { role: "admin", tone: "good", x: 800, y: 1940, w: 200, h: 64, title: "Converted", sub: "tuition begins", n: 20 },
+    { shape: "pill", role: "parent", start: true, x: 160, y: 2060, w: 220, h: 70, title: "Ongoing service", sub: ["review, support tickets,", "replacement tutor"], n: 21 }
   ].forEach(n => node(lead, n));
 
-  label(lead, 572, 411, "No");
-  label(lead, 480, 492, "Yes", "start");
-  label(lead, 975, 756, "No");
-  label(lead, 880, 837, "Yes", "start");
-  label(lead, 572, 1216, "No");
-  label(lead, 480, 1295, "Yes", "start");
-  label(lead, 905, 536, "back to step 6");
-  label(lead, 507, 991, "same session");
+  label(lead, 557, 450, "No");
+  label(lead, 470, 529, "Yes", "start");
+  label(lead, 897, 690, "No");
+  label(lead, 810, 766, "Yes", "start");
+  label(lead, 1237, 950, "No");
+  label(lead, 950, 511, "next tutor is matched automatically");
+  label(lead, 1150, 1030, "Yes", "start");
+  label(lead, 1237, 1190, "No");
+  label(lead, 1150, 1268, "Yes", "start");
+  label(lead, 897, 1810, "No");
+  label(lead, 810, 1892, "Yes", "start");
 
-  chip(lead, 307.5, 291, "Admin alerted");
-  chip(lead, 670, 631, "Tutor alerted · 24h");
-  chip(lead, 507, 866, "Tutor profile sent to parent");
+  chip(lead, 310, 321, "OTP sent");
+  chip(lead, 480, 1061, "Parent notified");
+  chip(lead, 650, 1181, "Tutor notified");
+  chip(lead, 530, 2041, "Review request sent");
 
   /* ---------- Tutor onboarding ---------- */
   const tf = document.getElementById("tutor-flow");
-  defs(tf, "arrow-tutor");
   const B = "arrow-tutor";
+  defs(tf, B);
   [
-    [[165, 110], [205, 110]],
-    [[395, 110], [420, 110]],
-    [[620, 110], [645, 110]],
-    [[835, 110], [860, 110]],
-    [[950, 158], [950, 206]],
-    [[950, 62], [950, 30], [520, 30], [520, 72]]
+    [[185, 130], [225, 130]],
+    [[435, 130], [470, 130]],
+    [[670, 130], [710, 130]],
+    [[890, 130], [930, 130]],
+    [[1130, 130], [1160, 130]],
+    [[800, 82], [800, 40], [570, 40], [570, 92]]
   ].forEach(p => edge(tf, p, B));
   [
-    { shape: "pill", role: "tutor", start: true, x: 90, y: 110, w: 150, h: 44, title: "Tutor signs up" },
-    { x: 300, y: 110, w: 190, h: 64, role: "tutor", title: "Verifies phone", sub: "name, city, gender" },
-    { x: 520, y: 110, w: 200, h: 76, role: "tutor", title: "Builds profile", sub: ["subjects × classes,", "areas, fee, timings"] },
-    { x: 740, y: 110, w: 190, h: 64, role: "tutor", title: "Uploads KYC", sub: "ID and qualification" },
-    { shape: "diamond", x: 950, y: 110, w: 180, h: 96, role: "admin", title: ["Admin", "approves?"] },
-    { shape: "pill", tone: "good", x: 950, y: 232, w: 210, h: 52, title: "Profile goes live", sub: "eligible for matching" }
+    { shape: "pill", role: "tutor", start: true, x: 100, y: 130, w: 170, h: 56, title: "Tutor signs up", sub: "mobile OTP, no password" },
+    { x: 330, y: 130, w: 210, h: 84, role: "tutor", title: "Builds profile", sub: ["subjects, classes, boards,", "areas, radius, fees,", "timings, photo, intro"] },
+    { x: 570, y: 130, w: 200, h: 76, role: "tutor", title: "Uploads documents", sub: ["ID and qualification,", "never shown publicly"] },
+    { shape: "diamond", x: 800, y: 130, w: 180, h: 96, role: "admin", title: ["Admin", "approves?"] },
+    { role: "admin", tone: "good", x: 1030, y: 130, w: 200, h: 76, title: "Profile goes live", sub: ["verified badge, listed,", "eligible for matching"] },
+    { shape: "pill", role: "tutor", start: true, x: 1250, y: 130, w: 180, h: 56, title: "Picks a plan", sub: "Free to start" }
   ].forEach(n => node(tf, n));
-  label(tf, 960, 186, "Yes", "start");
-  label(tf, 735, 22, "No · fix and resubmit");
+  label(tf, 910, 120, "Yes");
+  label(tf, 685, 31, "Rejected with a reason · tutor re-uploads");
+
+  /* ---------- Plans, payment and unlock ---------- */
+  const pf = document.getElementById("plan-flow");
+  const C = "arrow-plan";
+  defs(pf, C);
+  mk("text", { x: 22, y: 36, class: "lane-h h-muted" }, pf).textContent = "Buying a plan";
+  mk("line", { x1: 0, y1: 285, x2: 1360, y2: 285, class: "lane-sep" }, pf);
+  mk("text", { x: 22, y: 316, class: "lane-h h-muted" }, pf).textContent = "Unlocking a parent's contact";
+  [
+    [[200, 120], [245, 120]],
+    [[455, 120], [490, 120]],
+    [[690, 120], [725, 120]],
+    [[915, 120], [960, 120]],
+    [[1180, 120], [1210, 120]],
+    [[820, 168], [820, 200]],
+    [[705, 228], [590, 228], [590, 152]],
+    [[200, 390], [250, 390]],
+    [[450, 390], [490, 390]],
+    [[710, 390], [750, 390]],
+    [[350, 440], [350, 475]]
+  ].forEach(p => edge(pf, p, C));
+  edge(pf, [[950, 390], [1000, 390]], C, true);
+  [
+    { shape: "pill", role: "tutor", start: true, x: 110, y: 120, w: 180, h: 56, title: "Opens plans page", sub: "from tutor dashboard" },
+    { x: 350, y: 120, w: 210, h: 76, role: "tutor", title: "Compares plans", sub: ["price, validity, contact", "views, taxes, terms"] },
+    { x: 590, y: 120, w: 200, h: 64, role: "tutor", title: "Pays online", sub: "UPI, card or netbanking" },
+    { shape: "diamond", x: 820, y: 120, w: 190, h: 96, role: "system", title: ["Payment", "verified?"] },
+    { role: "system", tone: "good", x: 1070, y: 120, w: 220, h: 76, title: "Plan active", sub: ["credits added to wallet,", "invoice issued"] },
+    { shape: "pill", role: "system", start: true, x: 1280, y: 120, w: 140, h: 56, title: "Renewal reminder", sub: "before expiry" },
+    { shape: "pill", tone: "warn", x: 820, y: 228, w: 230, h: 56, title: "Failed or pending", sub: "tutor retries; admin reconciles" },
+    { shape: "pill", role: "tutor", start: true, x: 110, y: 390, w: 180, h: 56, title: "Taps Unlock", sub: "on a lead they want" },
+    { shape: "diamond", x: 350, y: 390, w: 200, h: 100, role: "system", title: ["Eligible, with", "credit left?"] },
+    { x: 600, y: 390, w: 220, h: 76, role: "system", title: "Deducts 1 credit", sub: ["once, on the server;", "a retry never charges twice"] },
+    { role: "system", tone: "good", x: 850, y: 390, w: 200, h: 64, title: "Contact shown", sub: "parent's number unmasked" },
+    { x: 1110, y: 390, w: 220, h: 76, role: "admin", title: "Lead found invalid?", sub: ["credit refunded", "as per policy"] },
+    { shape: "pill", tone: "warn", x: 350, y: 497, w: 230, h: 44, title: "Buy a plan or pay per lead" }
+  ].forEach(n => node(pf, n));
+  label(pf, 937, 110, "Yes");
+  label(pf, 830, 188, "No", "start");
+  label(pf, 470, 380, "Yes");
+  label(pf, 360, 462, "No", "start");
+  label(pf, 975, 380, "later");
 
   /* ---------- Phone layout: same flows as vertical step lists ---------- */
-  const ROLE = { parent: "Parent / student", admin: "Admin team", tutor: "Tutor", both: "Parent + tutor" };
+  const ROLE = { parent: "Parent / student", system: "Tuitionpedia system", admin: "Admin & support", tutor: "Tutor" };
   function mobileFlow(id, steps) {
     const ol = document.getElementById(id);
     steps.forEach(s => {
       const li = document.createElement("li");
+      if (s.group) {
+        li.className = "m-group";
+        li.textContent = s.group;
+        ol.appendChild(li);
+        return;
+      }
       li.className = "r-" + s.role + (s.tone ? " t-" + s.tone : "") + (s.decision ? " decision" : "");
       let html = `<div class="m-card${s.n ? "" : " no-num"}">`;
       if (s.n) html += `<span class="m-num">${s.n}</span>`;
       html += `<div class="m-body"><span class="m-role">${s.label || ((s.decision ? "Decision · " : "") + ROLE[s.role])}</span><strong>${s.title}</strong>`;
       if (s.sub) html += `<span class="m-sub">${s.sub}</span>`;
       (s.branch || []).forEach(b => { html += `<span class="m-branch ${b.tone}">${b.text}</span>`; });
-      if (s.alert) html += `<span class="m-alert">${s.alert}</span>`;
       html += `</div></div>`;
       li.innerHTML = html;
       ol.appendChild(li);
@@ -562,30 +676,50 @@
   }
 
   mobileFlow("lead-mobile", [
-    { n: 1, role: "parent", title: "Parent visits the site" },
-    { n: 2, role: "parent", title: "Fills ‘Find a Tutor’ form", sub: "Class, board, subjects, area, budget, timings" },
-    { n: 3, role: "parent", title: "Verifies phone by OTP", sub: "Lead saved as NEW", alert: "Admin alerted" },
-    { n: 4, role: "admin", title: "Calls the parent", sub: "Confirms needs and budget" },
-    { n: 5, role: "admin", decision: true, title: "Genuine lead?", branch: [{ tone: "good", text: "Yes → step 6" }, { tone: "bad", text: "No → spam / duplicate, lead closed" }] },
-    { n: 6, role: "admin", title: "Matching screen", sub: "Tutors ranked by subject, distance, fee, rating" },
-    { n: 7, role: "admin", title: "Assigns a tutor", sub: "One tutor or a shortlist of 3", alert: "Tutor alerted · 24h to reply" },
-    { n: 8, role: "tutor", title: "Reviews the lead", sub: "Parent's number still hidden" },
-    { n: 9, role: "tutor", decision: true, title: "Accepts the lead?", branch: [{ tone: "good", text: "Yes → step 10" }, { tone: "warn", text: "Declined or no reply → back to step 6" }] },
-    { n: 10, role: "tutor", title: "Contact unlocked", sub: "Lead charged to tutor's plan, then the tutor calls the parent", alert: "Tutor profile sent to parent" },
-    { n: 11, role: "parent", title: "Speaks with tutor", sub: "Fixes a demo time" },
-    { n: 12, role: "both", title: "Demo class", sub: "Free trial session; tutor marks it DEMO_DONE" },
-    { n: 13, role: "admin", title: "Collects feedback", sub: "From parent and tutor" },
-    { n: 14, role: "admin", decision: true, title: "Tuition started?", branch: [{ tone: "good", text: "Yes → converted" }, { tone: "warn", text: "No → not converted, back to step 6" }] },
-    { n: 15, role: "admin", tone: "good", label: "Result", title: "Converted", sub: "Parent rates the tutor" }
+    { n: 1, role: "parent", title: "Parent visits Tuitionpedia", sub: "Home page, city page or tutor search" },
+    { n: 2, role: "parent", title: "Fills requirement form", sub: "Class, board, subjects, mode, locality, days, time, start date, budget" },
+    { n: 3, role: "parent", title: "Verifies mobile OTP", sub: "And agrees to be contacted on WhatsApp, SMS or call" },
+    { n: 4, role: "system", title: "Validates requirement", sub: "Duplicate check, required fields, locality cleanup" },
+    { n: 5, role: "system", decision: true, title: "Valid and new?", branch: [{ tone: "good", text: "Yes → step 6" }, { tone: "warn", text: "No → follow-up task, support calls the parent" }] },
+    { n: 6, role: "system", title: "Auto-matches tutors", sub: "Class, subject, mode, radius, availability, budget, verified status" },
+    { n: 7, role: "admin", title: "Reviews the shortlist", sub: "Sees match reasons; can add or remove tutors" },
+    { n: 8, role: "admin", decision: true, title: "Suitable tutors?", branch: [{ tone: "good", text: "Yes → step 9" }, { tone: "warn", text: "No → no suitable tutor, follow-up set" }] },
+    { n: 9, role: "system", title: "Alerts matched tutors", sub: "WhatsApp, SMS, email or app, with a reply deadline" },
+    { n: 10, role: "tutor", title: "Gets the lead alert", sub: "Parent's number hidden; can ask support for details" },
+    { n: 11, role: "tutor", decision: true, title: "Interested?", branch: [{ tone: "good", text: "Yes → step 12" }, { tone: "warn", text: "Not interested or no reply → next tutor matched automatically" }] },
+    { n: 12, role: "admin", title: "Shares tutor options", sub: "Approved profiles or a curated shortlist; parent notified" },
+    { n: 13, role: "parent", title: "Reviews tutor profiles", sub: "Shortlists and asks for a callback or demo; tutor notified" },
+    { n: 14, role: "tutor", decision: true, title: "Has lead credits?", branch: [{ tone: "good", text: "Yes → step 15" }, { tone: "warn", text: "No → buys a plan or pays per lead" }] },
+    { n: 15, role: "tutor", title: "Unlocks parent contact", sub: "1 credit deducted once, confirmed by the server" },
+    { n: 16, role: "system", title: "Demo scheduled", sub: "Tutor proposes slots, parent confirms, reminders go to both" },
+    { n: 17, role: "parent", label: "Parent + tutor", title: "Demo class", sub: "Parent or guardian present; tutor marks attendance" },
+    { n: 18, role: "admin", title: "Records demo outcome", sub: "Attendance, feedback, next action" },
+    { n: 19, role: "admin", decision: true, title: "Tuition started?", branch: [{ tone: "good", text: "Yes → converted" }, { tone: "warn", text: "No → reason required; follow-up, re-match or close" }] },
+    { n: 20, role: "admin", tone: "good", label: "Result", title: "Converted", sub: "Tuition begins" },
+    { n: 21, role: "parent", title: "Ongoing service", sub: "Review request, support tickets, replacement tutor if needed" }
   ]);
 
   mobileFlow("tutor-mobile", [
-    { role: "tutor", title: "Tutor signs up" },
-    { role: "tutor", title: "Verifies phone", sub: "Name, city, gender" },
-    { role: "tutor", title: "Builds profile", sub: "Subjects × classes, areas, fee, timings" },
-    { role: "tutor", title: "Uploads KYC", sub: "ID and qualification" },
-    { role: "admin", decision: true, title: "Admin approves?", branch: [{ tone: "good", text: "Yes → profile goes live" }, { tone: "warn", text: "No → tutor fixes profile and resubmits" }] },
-    { role: "admin", tone: "good", label: "Result", title: "Profile goes live", sub: "Eligible for matching" }
+    { role: "tutor", title: "Tutor signs up", sub: "Mobile OTP, no password needed" },
+    { role: "tutor", title: "Builds profile", sub: "Subjects, classes, boards, areas, travel radius, fees, timings, photo, intro" },
+    { role: "tutor", title: "Uploads documents", sub: "ID and qualification, never shown publicly" },
+    { role: "admin", decision: true, title: "Admin approves?", branch: [{ tone: "good", text: "Yes → profile goes live" }, { tone: "warn", text: "No → rejected with a reason, tutor re-uploads" }] },
+    { role: "admin", tone: "good", label: "Result", title: "Profile goes live", sub: "Verified badge, listed in search, eligible for matching" },
+    { role: "tutor", title: "Picks a plan", sub: "Starts on Free; can upgrade any time" }
+  ]);
+
+  mobileFlow("plan-mobile", [
+    { group: "Buying a plan" },
+    { role: "tutor", title: "Opens plans page", sub: "From the tutor dashboard" },
+    { role: "tutor", title: "Compares plans", sub: "Price, validity, contact views, taxes, terms" },
+    { role: "tutor", title: "Pays online", sub: "UPI, card or netbanking" },
+    { role: "system", decision: true, title: "Payment verified?", branch: [{ tone: "good", text: "Yes → plan active" }, { tone: "warn", text: "No → failed or pending; tutor retries, admin reconciles" }] },
+    { role: "system", tone: "good", label: "Result", title: "Plan active", sub: "Credits added to wallet, invoice issued, renewal reminder before expiry" },
+    { group: "Unlocking a parent's contact" },
+    { role: "tutor", title: "Taps Unlock", sub: "On a lead they want" },
+    { role: "system", decision: true, title: "Eligible, with credit left?", branch: [{ tone: "good", text: "Yes → deduct 1 credit" }, { tone: "warn", text: "No → buy a plan or pay per lead" }] },
+    { role: "system", title: "Deducts 1 credit", sub: "Once, on the server; a retry never charges twice" },
+    { role: "system", tone: "good", label: "Result", title: "Contact shown", sub: "Parent's number unmasked. If the lead is later found invalid, the credit is refunded as per policy." }
   ]);
 })();
 </script>
